@@ -10,4 +10,5 @@ Welcome to the alliancepy |ProjectVersion| documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started
    alliancepy/index.rst
