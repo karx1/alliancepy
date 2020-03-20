@@ -26,6 +26,7 @@ class Team:
         The URL of the team's website, if they have any
 
     """
+
     def __init__(self, team_number: int, headers: dict):
         self.team_number = team_number
         self.headers = headers
@@ -76,7 +77,9 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(f"/team/{self.team_number}/results/{season}", headers=self.headers)
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
         return rankings[0]["opr"]
 
     def np_opr(self, season: int):
@@ -86,7 +89,9 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(f"/team/{self.team_number}/results/{season}", headers=self.headers)
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
         return rankings[0]["np_opr"]
 
     def tiebreaker_points(self, season: int):
@@ -96,7 +101,9 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(f"/team/{self.team_number}/results/{season}", headers=self.headers)
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
         return rankings[0]["tie_breaker_points"]
 
     def ranking_points(self, season: int):
@@ -107,7 +114,9 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(f"/team/{self.team_number}/results/{season}", headers=self.headers)
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
         return rankings[0]["ranking_points"]
 
     def qualifying_points(self, season: int):
@@ -119,5 +128,7 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(f"/team/{self.team_number}/results/{season}", headers=self.headers)
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
         return rankings[0]["qualifying_points"]
