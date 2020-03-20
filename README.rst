@@ -5,6 +5,8 @@ alliancepy
 A library to access The Orange Alliance API.
 This module makes it easy to access the official First Tech Challenge database and use it in your Python projects for things like data science and more.
 
+View the full documentation `here <https://alliancepy.readthedocs.io/en/latest/>`__
+
 Install with:
 
 .. code:: bash
