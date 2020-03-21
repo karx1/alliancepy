@@ -76,14 +76,32 @@ class Team:
         return rankings[0]
 
     def season_wins(self, season: int):
+        """
+        The amount of times a team has won a match in a particular season.
+
+        :param season: A valid FTC season key
+        :type season: int
+        """
         data = self._rankings(season)["wins"]
         return int(data)
 
     def season_losses(self, season: int):
+        """
+        The amount of times a team has lost a match in a particular season.
+
+        :param season: A valid FTC season key
+        :type season: int
+        """
         data = self._rankings(season)["losses"]
         return int(data)
 
     def season_ties(self, season: int):
+        """
+        The amount of times a team has tied in a match in a particular season.
+
+        :param season: A valid FTC season key
+        :type season: int
+        """
         data = self._rankings(season)["ties"]
         return int(data)
 
