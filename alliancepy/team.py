@@ -69,6 +69,24 @@ class Team:
         data = self._wlt()["ties"]
         return int(data)
 
+    def _rankings(self, season):
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
+        return rankings[0]
+
+    def season_wins(self, season: int):
+        data = self._rankings(season)["wins"]
+        return int(data)
+
+    def season_losses(self, season: int):
+        data = self._rankings(season)["losses"]
+        return int(data)
+
+    def season_ties(self, season: int):
+        data = self._rankings(season)["ties"]
+        return int(data)
+
     def opr(self, season: int):
         """
         OPR stands for Offensive Power Rating, which is a system to attempt to deduce the average point contribution of
@@ -77,10 +95,8 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
-        )
-        return rankings[0]["opr"]
+        data = self._rankings(season)["opr"]
+        return int(data)
 
     def np_opr(self, season: int):
         """
@@ -89,10 +105,8 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
-        )
-        return rankings[0]["np_opr"]
+        data = self._rankings(season)["np_opr"]
+        return int(data)
 
     def tiebreaker_points(self, season: int):
         """Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
@@ -101,10 +115,8 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
-        )
-        return rankings[0]["tie_breaker_points"]
+        data = self._rankings(season)["losses"]
+        return int(data)
 
     def ranking_points(self, season: int):
         """Ranking points are the number of points scored by the losing alliance in a qualification match.
@@ -114,10 +126,8 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
-        )
-        return rankings[0]["ranking_points"]
+        data = self._rankings(season)["losses"]
+        return int(data)
 
     def qualifying_points(self, season: int):
         """
@@ -128,7 +138,5 @@ class Team:
         :param season: A valid TOA season key.
         :type season: int
         """
-        rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
-        )
-        return rankings[0]["qualifying_points"]
+        data = self._rankings(season)["losses"]
+        return int(data)
