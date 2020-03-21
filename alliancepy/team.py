@@ -69,6 +69,24 @@ class Team:
         data = self._wlt()["ties"]
         return int(data)
 
+    def season_wins(self, season: int):
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
+        return rankings[0]["wins"]
+
+    def season_losses(self, season: int):
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
+        return rankings[0]["losses"]
+
+    def season_ties(self, season: int):
+        rankings = request(
+            f"/team/{self.team_number}/results/{season}", headers=self.headers
+        )
+        return rankings[0]["ties"]
+
     def opr(self, season: int):
         """
         OPR stands for Offensive Power Rating, which is a system to attempt to deduce the average point contribution of
