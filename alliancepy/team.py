@@ -51,6 +51,9 @@ class Team:
     def wins(self):
         """
         The total amount of times the team has won a match.
+
+        :return: The number of wins.
+        :rtype: int
         """
         data = self._wlt()["wins"]
         return int(data)
@@ -59,13 +62,20 @@ class Team:
     def losses(self):
         """
         The total amount of times the team has lost a match.
+        :return: The number of losses.
+        :rtype: int
         """
         data = self._wlt()["losses"]
         return int(data)
 
     @property
     def ties(self):
-        """The total amount of times the team has tied in a match."""
+        """
+        The total amount of times the team has tied in a match.
+
+        :return: The number of ties.
+        :rtype: int
+        """
         data = self._wlt()["ties"]
         return int(data)
 
@@ -79,8 +89,10 @@ class Team:
         """
         The amount of times a team has won a match in a particular season.
 
-        :param season: A valid FTC season key
+        :param season: A valid TOA season key
         :type season: int
+        :return: The number of wins in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["wins"]
         return int(data)
@@ -89,8 +101,10 @@ class Team:
         """
         The amount of times a team has lost a match in a particular season.
 
-        :param season: A valid FTC season key
+        :param season: A valid TOA season key
         :type season: int
+        :return: The number of losses in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["losses"]
         return int(data)
@@ -99,8 +113,10 @@ class Team:
         """
         The amount of times a team has tied in a match in a particular season.
 
-        :param season: A valid FTC season key
+        :param season: A valid TOA season key
         :type season: int
+        :return: The number of ties in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["ties"]
         return int(data)
@@ -112,6 +128,8 @@ class Team:
 
         :param season: A valid TOA season key.
         :type season: int
+        :return: The team's OPR in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["opr"]
         return int(data)
@@ -122,6 +140,8 @@ class Team:
 
         :param season: A valid TOA season key.
         :type season: int
+        :return: The team's NP_OPR (OPR without Penalties) in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["np_opr"]
         return int(data)
@@ -132,6 +152,8 @@ class Team:
 
         :param season: A valid TOA season key.
         :type season: int
+        :return: The team's tiebreaker points in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["losses"]
         return int(data)
@@ -143,6 +165,8 @@ class Team:
 
         :param season: A valid TOA season key.
         :type season: int
+        :return: The team's ranking points in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["losses"]
         return int(data)
@@ -155,6 +179,8 @@ class Team:
 
         :param season: A valid TOA season key.
         :type season: int
+        :return: The team's qualifying points in the specified season
+        :rtype: int
         """
         data = self._rankings(season)["losses"]
         return int(data)
