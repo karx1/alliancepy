@@ -3,7 +3,8 @@ from alliancepy import Team
 
 class Client:
     """
-    This is the main client class used for accessing the TOA API. Currently, it only serves up Team objects but it will
+    This is the main client class used for accessing the TOA API. Currently, it only serves up :class:`~alliancepy.Team`
+    objects but it will
     expand over time.
 
     :param api_key: Your TOA API key. This is required, otherwise you will not be able to access the database.
