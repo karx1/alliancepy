@@ -12,3 +12,4 @@ Welcome to the alliancepy |ProjectVersion| documentation!
 
    getting_started
    alliancepy/index.rst
+   changelog
