@@ -11,5 +11,6 @@ Welcome to the alliancepy |ProjectVersion| documentation!
    :caption: Contents:
 
    getting_started
+   season_about
    alliancepy/index.rst
    changelog
