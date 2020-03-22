@@ -1,4 +1,5 @@
 from alliancepy.http import request
+from alliancepy.season import Season
 
 
 class Team:
@@ -79,13 +80,13 @@ class Team:
         data = self._wlt()["ties"]
         return int(data)
 
-    def _rankings(self, season):
+    def _rankings(self, season: Season):
         rankings = request(
             f"/team/{self.team_number}/results/{season}", headers=self.headers
         )
-        return rankings[0]
+        return rankings
 
-    def season_wins(self, season: int):
+    def season_wins(self, season: Season):
         """
         The amount of times a team has won a match in a particular season.
 
@@ -94,10 +95,14 @@ class Team:
         :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["wins"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["wins"]
+            x.append(int(raw))
+        return sum(x)
 
-    def season_losses(self, season: int):
+    def season_losses(self, season: Season):
         """
         The amount of times a team has lost a match in a particular season.
 
@@ -106,10 +111,14 @@ class Team:
         :return: The number of losses in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["losses"]
+            x.append(int(raw))
+        return sum(x)
 
-    def season_ties(self, season: int):
+    def season_ties(self, season: Season):
         """
         The amount of times a team has tied in a match in a particular season.
 
@@ -118,10 +127,14 @@ class Team:
         :return: The number of ties in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["ties"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["ties"]
+            x.append(int(raw))
+        return sum(x)
 
-    def opr(self, season: int):
+    def opr(self, season: Season):
         """
         OPR stands for Offensive Power Rating, which is a system to attempt to deduce the average point contribution of
         a team to an alliance. Penalties are also factored in.
@@ -131,10 +144,14 @@ class Team:
         :return: The team's OPR in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["opr"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["opr"]
+            x.append(int(raw))
+        return sum(x)
 
-    def np_opr(self, season: int):
+    def np_opr(self, season: Season):
         """
         NP_OPR is just OPR, but penalties are not factored in.
 
@@ -143,10 +160,14 @@ class Team:
         :return: The team's NP_OPR (OPR without Penalties) in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["np_opr"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["np_opr"]
+            x.append(int(raw))
+        return sum(x)
 
-    def tiebreaker_points(self, season: int):
+    def tiebreaker_points(self, season: Season):
         """Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
         total tiebreaker points of a team in one season.
 
@@ -155,10 +176,14 @@ class Team:
         :return: The team's tiebreaker points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["tie_breaker_points"]
+            x.append(int(raw))
+        return sum(x)
 
-    def ranking_points(self, season: int):
+    def ranking_points(self, season: Season):
         """Ranking points are the number of points scored by the losing alliance in a qualification match.
         If you win the match, then the RP awarded to you is the score of your opponent alliance (which lost).
         If you lose the match, then the RP awarded to you is your own alliance's score.
@@ -168,10 +193,14 @@ class Team:
         :return: The team's ranking points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["ranking_points"]
+            x.append(int(raw))
+        return sum(x)
 
-    def qualifying_points(self, season: int):
+    def qualifying_points(self, season: Season):
         """
         Winning teams of a qualifying match eatch receive 2 QP. Losing teams receive 0. If a match ends in a tie, all
         four teams receive 1 QP.
@@ -182,5 +211,5 @@ class Team:
         :return: The team's qualifying points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
+        data = self._rankings(season)["qualifying_points"]
         return int(data)

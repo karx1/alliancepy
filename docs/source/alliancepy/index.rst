@@ -7,3 +7,4 @@ alliancepy
 
    client
    team
+   season
