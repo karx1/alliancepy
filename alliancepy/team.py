@@ -91,7 +91,7 @@ class Team:
         The amount of times a team has won a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The number of wins in the specified season
         :rtype: int
         """
@@ -107,7 +107,7 @@ class Team:
         The amount of times a team has lost a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The number of losses in the specified season
         :rtype: int
         """
@@ -123,7 +123,7 @@ class Team:
         The amount of times a team has tied in a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The number of ties in the specified season
         :rtype: int
         """
@@ -140,7 +140,7 @@ class Team:
         a team to an alliance. Penalties are also factored in.
 
         :param season: A valid TOA season key.
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The team's OPR in the specified season
         :rtype: int
         """
@@ -156,7 +156,7 @@ class Team:
         NP_OPR is just OPR, but penalties are not factored in.
 
         :param season: A valid TOA season key.
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The team's NP_OPR (OPR without Penalties) in the specified season
         :rtype: int
         """
@@ -172,7 +172,7 @@ class Team:
         total tiebreaker points of a team in one season.
 
         :param season: A valid TOA season key.
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The team's tiebreaker points in the specified season
         :rtype: int
         """
@@ -189,7 +189,7 @@ class Team:
         If you lose the match, then the RP awarded to you is your own alliance's score.
 
         :param season: A valid TOA season key.
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The team's ranking points in the specified season
         :rtype: int
         """
@@ -207,7 +207,7 @@ class Team:
 
 
         :param season: A valid TOA season key.
-        :type season: int
+        :type season: :class:`~.season.Season`
         :return: The team's qualifying points in the specified season
         :rtype: int
         """
