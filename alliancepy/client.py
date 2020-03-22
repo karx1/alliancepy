@@ -1,4 +1,4 @@
-from alliancepy import Team
+from alliancepy.team import Team
 
 
 class Client:
