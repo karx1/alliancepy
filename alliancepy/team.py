@@ -84,7 +84,7 @@ class Team:
         rankings = request(
             f"/team/{self.team_number}/results/{season}", headers=self.headers
         )
-        return rankings[0]
+        return rankings
 
     def season_wins(self, season: Season):
         """
@@ -95,8 +95,12 @@ class Team:
         :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["wins"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["wins"]
+            x.append(int(raw))
+        return sum(x)
 
     def season_losses(self, season: Season):
         """
@@ -107,8 +111,12 @@ class Team:
         :return: The number of losses in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["losses"]
+            x.append(int(raw))
+        return sum(x)
 
     def season_ties(self, season: Season):
         """
@@ -119,8 +127,12 @@ class Team:
         :return: The number of ties in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["ties"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["ties"]
+            x.append(int(raw))
+        return sum(x)
 
     def opr(self, season: Season):
         """
@@ -132,8 +144,12 @@ class Team:
         :return: The team's OPR in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["opr"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["opr"]
+            x.append(int(raw))
+        return sum(x)
 
     def np_opr(self, season: Season):
         """
@@ -144,8 +160,12 @@ class Team:
         :return: The team's NP_OPR (OPR without Penalties) in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["np_opr"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["np_opr"]
+            x.append(int(raw))
+        return sum(x)
 
     def tiebreaker_points(self, season: Season):
         """Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
@@ -156,8 +176,12 @@ class Team:
         :return: The team's tiebreaker points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["tie_breaker_points"]
+            x.append(int(raw))
+        return sum(x)
 
     def ranking_points(self, season: Season):
         """Ranking points are the number of points scored by the losing alliance in a qualification match.
@@ -169,8 +193,12 @@ class Team:
         :return: The team's ranking points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["ranking_points"]
+            x.append(int(raw))
+        return sum(x)
 
     def qualifying_points(self, season: Season):
         """
@@ -183,5 +211,5 @@ class Team:
         :return: The team's qualifying points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["losses"]
+        data = self._rankings(season)["qualifying_points"]
         return int(data)
