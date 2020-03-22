@@ -1,5 +1,6 @@
 import unittest
 import alliancepy
+import alliancepy.team
 
 
 def create_team(team_number: int):
@@ -15,7 +16,7 @@ def create_team(team_number: int):
 class TestRequest(unittest.TestCase):
     def test_instance(self):
         team = create_team(16405)
-        self.assertIsInstance(team, alliancepy.Team)
+        self.assertIsInstance(team, alliancepy.team.Team)
 
     def test_response(self):
         team = create_team(16405)
