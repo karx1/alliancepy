@@ -29,23 +29,23 @@ class Team:
     """
 
     def __init__(self, team_number: int, headers: dict):
-        self.team_number = team_number
-        self.headers = headers
-        team_stats = request(target=f"/team/{team_number}", headers=headers)
-        team_stats = team_stats[0]
-        self.region = team_stats["region_key"]
-        self.league = team_stats["league_key"]
-        self.short_name = team_stats["team_name_short"]
-        self.long_name = team_stats["team_name_long"]
-        self.robot_name = team_stats["robot_name"]
-        location = f"{team_stats['city']}, {team_stats['state_prov']}, {team_stats['country']}, {team_stats['zip_code']}"
+        self._team_number = team_number
+        self._headers = headers
+        team = request(target=f"/team/{team_number}", headers=headers)
+        team = team[0]
+        self.region = team["region_key"]
+        self.league = team["league_key"]
+        self.short_name = team["team_name_short"]
+        self.long_name = team["team_name_long"]
+        self.robot_name = team["robot_name"]
+        location = f"{team['city']}, {team['state_prov']}, {team['country']}, {team['zip_code']}"
         self.location = location
-        self.rookie_year = team_stats["rookie_year"]
-        self.last_active = team_stats["last_active"]
-        self.website = team_stats["website"]
+        self.rookie_year = team["rookie_year"]
+        self.last_active = team["last_active"]
+        self.website = team["website"]
 
     def _wlt(self):
-        data = request(target=f"/team/{self.team_number}/wlt", headers=self.headers)
+        data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         return data[0]
 
     @property
@@ -82,7 +82,7 @@ class Team:
 
     def _rankings(self, season: Season):
         rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
+            f"/team/{self._team_number}/results/{season}", headers=self._headers
         )
         return rankings
 
