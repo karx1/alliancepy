@@ -2,6 +2,23 @@ from alliancepy.http import request
 from alliancepy.season import Season
 
 
+def readonly(*attrs):
+    def class_rebuilder(cls):
+        class NewClass(cls):
+            def __setattr__(self, name, value):
+                if name not in attrs:
+                    pass
+                elif name not in self.__dict__:
+                    pass
+                else:
+                    raise AttributeError(f"Can't modify {name}")
+
+                super().__setattr__(name, value)
+        return NewClass
+    return class_rebuilder
+
+
+@readonly('region', 'league', 'short_name', 'long_name', 'robot_name', 'location', 'rookie_year', 'last_active', 'website')
 class Team:
     """
     This is the class used to access an existing FTC team. Do not create instances of this class yourself. Instead use
