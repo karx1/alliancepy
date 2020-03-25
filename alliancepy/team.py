@@ -2,6 +2,35 @@ from alliancepy.http import request
 from alliancepy.season import Season
 
 
+def readonly(*attrs):
+    def class_rebuilder(cls):
+        class NewClass(cls):
+            def __setattr__(self, name, value):
+                if name not in attrs:
+                    pass
+                elif name not in self.__dict__:
+                    pass
+                else:
+                    raise AttributeError(f"Can't modify {name}")
+
+                super().__setattr__(name, value)
+
+        return NewClass
+
+    return class_rebuilder
+
+
+@readonly(
+    "region",
+    "league",
+    "short_name",
+    "long_name",
+    "robot_name",
+    "location",
+    "rookie_year",
+    "last_active",
+    "website",
+)
 class Team:
     """
     This is the class used to access an existing FTC team. Do not create instances of this class yourself. Instead use
@@ -29,23 +58,23 @@ class Team:
     """
 
     def __init__(self, team_number: int, headers: dict):
-        self.team_number = team_number
-        self.headers = headers
-        team_stats = request(target=f"/team/{team_number}", headers=headers)
-        team_stats = team_stats[0]
-        self.region = team_stats["region_key"]
-        self.league = team_stats["league_key"]
-        self.short_name = team_stats["team_name_short"]
-        self.long_name = team_stats["team_name_long"]
-        self.robot_name = team_stats["robot_name"]
-        location = f"{team_stats['city']}, {team_stats['state_prov']}, {team_stats['country']}, {team_stats['zip_code']}"
+        self._team_number = team_number
+        self._headers = headers
+        team = request(target=f"/team/{team_number}", headers=headers)
+        team = team[0]
+        self.region = team["region_key"]
+        self.league = team["league_key"]
+        self.short_name = team["team_name_short"]
+        self.long_name = team["team_name_long"]
+        self.robot_name = team["robot_name"]
+        location = f"{team['city']}, {team['state_prov']}, {team['country']}, {team['zip_code']}"
         self.location = location
-        self.rookie_year = team_stats["rookie_year"]
-        self.last_active = team_stats["last_active"]
-        self.website = team_stats["website"]
+        self.rookie_year = team["rookie_year"]
+        self.last_active = team["last_active"]
+        self.website = team["website"]
 
     def _wlt(self):
-        data = request(target=f"/team/{self.team_number}/wlt", headers=self.headers)
+        data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         return data[0]
 
     @property
@@ -82,7 +111,7 @@ class Team:
 
     def _rankings(self, season: Season):
         rankings = request(
-            f"/team/{self.team_number}/results/{season}", headers=self.headers
+            f"/team/{self._team_number}/results/{season}", headers=self._headers
         )
         return rankings
 
@@ -211,5 +240,10 @@ class Team:
         :return: The team's qualifying points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["qualifying_points"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["qualifying_points"]
+            x.append(int(raw))
+
+        return sum(x)
