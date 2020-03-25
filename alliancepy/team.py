@@ -240,5 +240,10 @@ class Team:
         :return: The team's qualifying points in the specified season
         :rtype: int
         """
-        data = self._rankings(season)["qualifying_points"]
-        return int(data)
+        data = self._rankings(season)
+        x = []
+        for item in data:
+            raw = item["qualifying_points"]
+            x.append(int(raw))
+
+        return sum(x)
