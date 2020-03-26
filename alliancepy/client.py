@@ -25,7 +25,7 @@ class Client:
     def team(self, team_number: int):
         """Create a :class:`~.team.Team` object.
 
-        :param team_number: The valid First Tech Challenge team number.
+        :param team_number: A valid First Tech Challenge team number.
         :type team_number: int
         :return: The Team object
         :rtype: :class:`~.team.Team`
