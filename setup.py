@@ -12,7 +12,7 @@ extras_require = {
 setup(
     name="alliancepy",
     version=alliancepy.__version__,
-    packages=["alliancepy", "alliancepy.ext.async"],
+    packages=["alliancepy", "alliancepy.ext.aio"],
     url="https://github.com/karx1/alliancepy",
     license="MIT",
     author="karx",
