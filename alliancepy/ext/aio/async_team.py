@@ -6,7 +6,8 @@ import nest_asyncio
 
 class Team:
     """
-    This is the Asynchronous version of the normal :class:`~alliancepy.team.Team` class.
+    This is the Asynchronous version of the normal :class:`~alliancepy.team.Team` class. You should not create your own
+    instances of this class - instead use your :class:`~.async_client.AsyncClient` object.
 
     region
         The key of the team's according region.
