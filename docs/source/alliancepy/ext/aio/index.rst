@@ -1,3 +1,5 @@
+.. _aio:
+
 alliancepy "aio" extension
 ==========================
 

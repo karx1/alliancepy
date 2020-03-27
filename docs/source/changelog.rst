@@ -3,6 +3,15 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p2:
+
+v1.2
+-----
+- Create extensions system - this makes it easy to add extensions to the basic usage.
+- Create asynchronous extension - see :ref:`aio` for more details.
+- Fix bugs and documentation
+- Other miscellaneous changes
+
 .. _vp1p1:
 
 v1.1
