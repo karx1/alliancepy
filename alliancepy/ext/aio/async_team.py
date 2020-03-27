@@ -1,11 +1,13 @@
-from alliancepy.http import request
+from .async_http import request
 from alliancepy.season import Season
+import asyncio
+import nest_asyncio
 
 
 class Team:
     """
-    This is the class used to access an existing FTC team. Do not create instances of this class yourself. Instead use
-    the "team" method provided by your client object.
+    This is the Asynchronous version of the normal :class:`~alliancepy.team.Team` class. You should not create your own
+    instances of this class - instead use your :class:`~.async_client.AsyncClient` object.
 
     region
         The key of the team's according region.
@@ -27,11 +29,12 @@ class Team:
         The URL of the team's website, if they have any
 
     """
-
-    def __init__(self, team_number: int, headers: dict):
+    def __init__(self, team_number, headers: dict):
         self._team_number = team_number
         self._headers = headers
-        team = request(target=f"/team/{team_number}", headers=headers)
+        self._loop = asyncio.get_event_loop()
+        nest_asyncio.apply(self._loop)
+        team = self._loop.run_until_complete(request(target=f"/team/{team_number}", headers=headers))
         team = team[0]
         self.region = team["region_key"]
         self.league = team["league_key"]
@@ -44,17 +47,11 @@ class Team:
         self.last_active = team["last_active"]
         self.website = team["website"]
 
-    def __setattr__(self, key, value):
-        if key not in self.__dict__:
-            pass
-        else:
-            raise AttributeError(f"Can't modify '{key}'")
-
-        super().__setattr__(key, value)
-
-    def _wlt(self):
-        data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
-        return data[0]
+    async def _wlt(self):
+        data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
+        self._wins = data[0]["wins"]
+        self._losses = data[0]["losses"]
+        self._ties = data[0]["ties"]
 
     @property
     def wins(self):
@@ -64,162 +61,169 @@ class Team:
         :return: The number of wins.
         :rtype: int
         """
-        data = self._wlt()["wins"]
-        return int(data)
+        self._loop.run_until_complete(self._wlt())
+        return self._wins
 
     @property
     def losses(self):
         """
         The total amount of times the team has lost a match.
-        :return: The number of losses.
+
+        :return: The number of wins.
         :rtype: int
         """
-        data = self._wlt()["losses"]
-        return int(data)
+        self._loop.run_until_complete(self._wlt())
+        return self._losses
 
     @property
     def ties(self):
         """
         The total amount of times the team has tied in a match.
 
-        :return: The number of ties.
+        :return: The number of wins.
         :rtype: int
         """
-        data = self._wlt()["ties"]
-        return int(data)
+        self._loop.run_until_complete(self._wlt())
+        return self._ties
 
-    def _rankings(self, season: Season):
-        rankings = request(
-            f"/team/{self._team_number}/results/{season}", headers=self._headers
-        )
+    async def _rankings(self, season: Season):
+        rankings = await request(f"/team/{self._team_number}/results/{season}", headers=self._headers)
         return rankings
 
-    def season_wins(self, season: Season):
+    async def season_wins(self, season: Season):
         """
         The amount of times a team has won a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
+        :type season: :class:`~alliancepy.season.Season`
         :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["wins"]
             x.append(int(raw))
+
         return sum(x)
 
-    def season_losses(self, season: Season):
+    async def season_losses(self, season: Season):
         """
         The amount of times a team has lost a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
-        :return: The number of losses in the specified season
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["losses"]
             x.append(int(raw))
+
         return sum(x)
 
-    def season_ties(self, season: Season):
+    async def season_ties(self, season: Season):
         """
         The amount of times a team has tied in a match in a particular season.
 
         :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
-        :return: The number of ties in the specified season
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["ties"]
             x.append(int(raw))
+
         return sum(x)
 
-    def opr(self, season: Season):
+    async def opr(self, season: Season):
         """
         OPR stands for Offensive Power Rating, which is a system to attempt to deduce the average point contribution of
         a team to an alliance. Penalties are also factored in.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's OPR in the specified season
+        :param season: A valid TOA season key
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["opr"]
             x.append(int(raw))
+
         return sum(x)
 
-    def np_opr(self, season: Season):
+    async def np_opr(self, season: Season):
         """
         NP_OPR is just OPR, but penalties are not factored in.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's NP_OPR (OPR without Penalties) in the specified season
+        :param season: A valid TOA season key
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["np_opr"]
             x.append(int(raw))
+
         return sum(x)
 
-    def tiebreaker_points(self, season: Season):
-        """Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
+    async def tiebreaker_points(self, season: Season):
+        """
+        Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
         total tiebreaker points of a team in one season.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's tiebreaker points in the specified season
+        :param season: A valid TOA season key
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["tie_breaker_points"]
             x.append(int(raw))
+
         return sum(x)
 
-    def ranking_points(self, season: Season):
-        """Ranking points are the number of points scored by the losing alliance in a qualification match.
+    async def ranking_points(self, season: Season):
+        """
+        Ranking points are the number of points scored by the losing alliance in a qualification match.
         If you win the match, then the RP awarded to you is the score of your opponent alliance (which lost).
-        If you lose the match, then the RP awarded to you is your own alliance's score.
+        If you lose the match, then the RP awarded to you is your own alliance’s score.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's ranking points in the specified season
+        :param season: A valid TOA season key
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["ranking_points"]
             x.append(int(raw))
+
         return sum(x)
 
-    def qualifying_points(self, season: Season):
+    async def qualifying_points(self, season: Season):
         """
         Winning teams of a qualifying match eatch receive 2 QP. Losing teams receive 0. If a match ends in a tie, all
         four teams receive 1 QP.
 
-
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's qualifying points in the specified season
+        :param season: A valid TOA season key
+        :type season: :class:`~alliancepy.season.Season`
+        :return: The number of wins in the specified season
         :rtype: int
         """
-        data = self._rankings(season)
+        data = await self._rankings(season)
         x = []
         for item in data:
             raw = item["qualifying_points"]

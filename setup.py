@@ -4,12 +4,15 @@ import alliancepy
 with open("README.rst") as f:
     readme = f.read()
 
-extras_require = {"docs": ["sphinx", "sphinx-rtd-theme"]}
+extras_require = {
+    "docs": ["sphinx", "sphinx-rtd-theme"],
+    "async": ["aiohttp[speedups]", "nest_asyncio"],
+}
 
 setup(
     name="alliancepy",
     version=alliancepy.__version__,
-    packages=["alliancepy"],
+    packages=["alliancepy", "alliancepy.ext.aio"],
     url="https://github.com/karx1/alliancepy",
     license="MIT",
     author="karx",
