@@ -3,7 +3,7 @@ Getting started with alliancepy
 
 The first thing you need to do is get an API key. To do this, go to `The Orange Alliance website <https://theorangealliance.org/home>`__ and register an account. Then, go to your account page and click "get an API Key." It should give you an API key, which you can then use to create your client object.
 
-Now, we need to install the library:
+Now, we need to install the library. See :ref:`install` for more details.
 
 .. code:: bash
 
