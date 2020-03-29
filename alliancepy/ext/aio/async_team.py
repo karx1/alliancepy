@@ -47,25 +47,6 @@ class Team:
         self.last_active = team["last_active"]
         self.website = team["website"]
 
-    def __setattr__(self, key, value):
-        readonly = [
-            "region",
-            "league",
-            "short_name",
-            "long_name",
-            "robot_name",
-            "location",
-            "rookie_year",
-            "last_active",
-            "website"
-        ]
-        if key not in readonly:
-            pass
-        elif key not in self.__dict__:
-            pass
-        else:
-            raise AttributeError(f"Can't modify {key}")
-
     async def _wlt(self):
         data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         self._wins = data[0]["wins"]

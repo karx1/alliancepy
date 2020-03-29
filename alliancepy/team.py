@@ -44,28 +44,6 @@ class Team:
         self.last_active = team["last_active"]
         self.website = team["website"]
 
-    def __setattr__(self, key, value):
-        readonly = [
-            "region",
-            "league",
-            "short_name",
-            "long_name",
-            "robot_name",
-            "location",
-            "rookie_year",
-            "last_active",
-            "website"
-        ]
-
-        if key not in readonly:
-            pass
-        elif key not in self.__dict__:
-            pass
-        else:
-            raise AttributeError(f"Can't modify {key}")
-
-        super().__setattr__(key, value)
-
     def _wlt(self):
         data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         return data[0]
