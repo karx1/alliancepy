@@ -1,8 +1,13 @@
 from setuptools import setup
-import alliancepy
+import re
 
 with open("README.rst") as f:
     readme = f.read()
+
+with open("alliancepy/__init__.py") as f:
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
+    ).group(1)
 
 extras_require = {
     "docs": ["sphinx", "sphinx-rtd-theme"],
@@ -11,7 +16,7 @@ extras_require = {
 
 setup(
     name="alliancepy",
-    version=alliancepy.__version__,
+    version=version,
     packages=["alliancepy", "alliancepy.ext.aio"],
     url="https://github.com/karx1/alliancepy",
     license="MIT",
