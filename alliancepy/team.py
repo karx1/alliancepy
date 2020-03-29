@@ -45,10 +45,24 @@ class Team:
         self.website = team["website"]
 
     def __setattr__(self, key, value):
-        if key not in self.__dict__:
+        readonly = [
+            "region",
+            "league",
+            "short_name",
+            "long_name",
+            "robot_name",
+            "location",
+            "rookie_year",
+            "last_active",
+            "website"
+        ]
+
+        if key not in readonly:
+            pass
+        elif key not in self.__dict__:
             pass
         else:
-            raise AttributeError(f"Can't modify '{key}'")
+            raise AttributeError(f"Can't modify {key}")
 
         super().__setattr__(key, value)
 
