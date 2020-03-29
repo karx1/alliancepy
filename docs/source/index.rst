@@ -11,6 +11,7 @@ Welcome to the alliancepy |ProjectVersion| documentation!
    :caption: Contents:
 
    getting_started
+   install
    season_about
    alliancepy/index.rst
    alliancepy/ext/aio/index.rst
