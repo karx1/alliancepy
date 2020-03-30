@@ -4,6 +4,11 @@ import asyncio
 
 
 class Event:
+    """
+    This is the asynchronous version of the normal :class:`~alliancepy.event.Event` class.
+    Instances of this class should not be created directly; instead use your :class:`~.team.Team` object.
+    """
+
     def __init__(self, event_key: str, headers: dict):
         self._event_key = event_key
         self._headers = headers
@@ -30,6 +35,14 @@ class Event:
         return resp
 
     async def rank(self, team_number: int):
+        """
+        The specified team's rank at the end of the match.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The rank as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -37,6 +50,14 @@ class Event:
                 return int(raw)
 
     async def rank_change(self, team_number: int):
+        """
+        The amount of times the team's rank changed during the event.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The rank change as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -44,6 +65,14 @@ class Event:
                 return int(raw)
 
     async def wins(self, team_number: int):
+        """
+        The amount of times within the event that the specified team won a match.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of wins as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -51,6 +80,14 @@ class Event:
                 return int(raw)
 
     async def losses(self, team_number: int):
+        """
+        The amount of times within the event that the specified team lost a match.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of losses as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -58,6 +95,14 @@ class Event:
                 return int(raw)
 
     async def ties(self, team_number: int):
+        """
+        The amount of times within the event that the specified team tied in a match.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of ties as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -65,6 +110,14 @@ class Event:
                 return int(raw)
 
     async def opr(self, team_number: int):
+        """
+        The specified team's OPR for this event only. Penalties are factored in.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The OPR as a floating point number.
+        :rtype: float
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -72,6 +125,14 @@ class Event:
                 return int(raw)
 
     async def np_opr(self, team_number: int):
+        """
+        The specified team's OPR for this event only. Penaltied are not factored in.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The NP_OPR as a floating point number.
+        :rtype: float
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -79,6 +140,14 @@ class Event:
                 return int(raw)
 
     async def highest_qualifier_score(self, team_number: int):
+        """
+        The specified team's highest score in a qualifier.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The score as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -86,6 +155,14 @@ class Event:
                 return int(raw)
 
     async def ranking_points(self, team_number: int):
+        """
+        The specified team's ranking points for this event only.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of ranking points as a floating point number
+        :rtype: float
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -93,6 +170,14 @@ class Event:
                 return int(raw)
 
     async def qualifying_points(self, team_number: int):
+        """
+        The specified team's qualifying points for this event only.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of qualifying points as an integer
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
@@ -100,6 +185,14 @@ class Event:
                 return int(raw)
 
     async def tiebreaker_points(self, team_number: int):
+        """
+        The specified team's tiebreaker points for this event only.
+
+        :param team_number: A valid FTC team number.
+        :type team_number: int
+        :return: The amount of tiebreaker points as a floating point number
+        :rtype: int
+        """
         rankings = await self._rankings()
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:

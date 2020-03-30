@@ -50,6 +50,15 @@ class Team:
         self.website = team["website"]
 
     async def events(self, season: Season):
+        """
+        Every event the team has participated in, in a particular season.
+
+        :param season: An alliancepy Season object
+        :type season: :class:`~.season.Season`
+        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
+        event key.
+        :rtype: dict
+        """
         edict = {}
         events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
         for event in events:

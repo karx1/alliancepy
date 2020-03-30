@@ -47,6 +47,15 @@ class Team:
         self.website = team["website"]
 
     def events(self, season: Season):
+        """
+        Every event the team has participated in, in a particular season.
+
+        :param season: An alliancepy Season object
+        :type season: :class:`~.season.Season`
+        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
+        event key.
+        :rtype: dict
+        """
         edict = {}
         events = request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
         for event in events:
@@ -157,7 +166,7 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's OPR in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
@@ -173,7 +182,7 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's NP_OPR (OPR without Penalties) in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
@@ -189,7 +198,7 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's tiebreaker points in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
@@ -206,7 +215,7 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's ranking points in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
