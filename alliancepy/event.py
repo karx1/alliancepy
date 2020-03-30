@@ -15,6 +15,13 @@ class Event:
         self.name = info["event_name"]
         location = f"{info['city']} {info['state_prov']}, {info['country']}"
         self.location = location
+        self.venue = info["venue"]
+
+    def __str__(self):
+        return f"<Event: {self.name}>"
+
+    def __repr__(self):
+        return f"<Event: {self.name} ({self._event_key})>"
 
     def _rankings(self):
         resp = request(f"/events/{self._event_key}/rankings", headers=self._headers)
