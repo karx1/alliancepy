@@ -1,7 +1,9 @@
 from .async_http import request
+from .async_event import Event
 from alliancepy.season import Season
 import asyncio
 import nest_asyncio
+import re
 
 
 class Team:
@@ -47,24 +49,18 @@ class Team:
         self.last_active = team["last_active"]
         self.website = team["website"]
 
-    def __setattr__(self, key, value):
-        readonly = [
-            "region",
-            "league",
-            "short_name",
-            "long_name",
-            "robot_name",
-            "location",
-            "rookie_year",
-            "last_active",
-            "website"
-        ]
-        if key not in readonly:
-            pass
-        elif key not in self.__dict__:
-            pass
-        else:
-            raise AttributeError(f"Can't modify {key}")
+    async def events(self, season: Season):
+        edict = {}
+        events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        for event in events:
+            e = Event(event_key=event["event_key"], headers=self._headers)
+            event_key = event["event_key"]
+            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
+            key = raw_key.replace(" ", "_")
+            key = key.lower()
+            edict[key] = e
+
+        return edict
 
     async def _wlt(self):
         data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
