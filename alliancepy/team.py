@@ -1,5 +1,7 @@
+import re
 from alliancepy.http import request
 from alliancepy.season import Season
+from alliancepy.event import Event
 
 
 class Team:
@@ -43,6 +45,28 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+
+    def events(self, season: Season):
+        """
+        Every event the team has participated in, in a particular season.
+
+        :param season: An alliancepy Season object
+        :type season: :class:`~.season.Season`
+        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
+        event key.
+        :rtype: dict
+        """
+        edict = {}
+        events = request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        for event in events:
+            e = Event(event_key=event["event_key"], headers=self._headers)
+            event_key = event["event_key"]
+            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
+            key = raw_key.replace(" ", "_")
+            key = key.lower()
+            edict[key] = e
+
+        return edict
 
     def _wlt(self):
         data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
@@ -142,13 +166,13 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's OPR in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
         for item in data:
             raw = item["opr"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def np_opr(self, season: Season):
@@ -158,13 +182,13 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's NP_OPR (OPR without Penalties) in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
         for item in data:
             raw = item["np_opr"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def tiebreaker_points(self, season: Season):
@@ -174,13 +198,13 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's tiebreaker points in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
         for item in data:
             raw = item["tie_breaker_points"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def ranking_points(self, season: Season):
@@ -191,13 +215,13 @@ class Team:
         :param season: A valid TOA season key.
         :type season: :class:`~.season.Season`
         :return: The team's ranking points in the specified season
-        :rtype: int
+        :rtype: float
         """
         data = self._rankings(season)
         x = []
         for item in data:
             raw = item["ranking_points"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def qualifying_points(self, season: Season):

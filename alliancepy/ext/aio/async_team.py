@@ -1,7 +1,9 @@
 from .async_http import request
+from .async_event import Event
 from alliancepy.season import Season
 import asyncio
 import nest_asyncio
+import re
 
 
 class Team:
@@ -46,6 +48,28 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+
+    async def events(self, season: Season):
+        """
+        Every event the team has participated in, in a particular season.
+
+        :param season: An alliancepy Season object
+        :type season: :class:`~.season.Season`
+        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
+        event key.
+        :rtype: dict
+        """
+        edict = {}
+        events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        for event in events:
+            e = Event(event_key=event["event_key"], headers=self._headers)
+            event_key = event["event_key"]
+            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
+            key = raw_key.replace(" ", "_")
+            key = key.lower()
+            edict[key] = e
+
+        return edict
 
     async def _wlt(self):
         data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)

@@ -6,5 +6,6 @@ alliancepy
    :caption: Contents:
 
    client
-   team
    season
+   team
+   event

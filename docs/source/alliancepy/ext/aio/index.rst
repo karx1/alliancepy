@@ -11,7 +11,7 @@ To install alliancepy with the asynchronous capabilities, use:
 
 	pip install alliancepy[async]
 
-This will install aiohttp with speedups, and nest_asyncio.
+This will install aiohttp with speedups, and nest_asyncio. See :ref:`install` for more information.
 
 .. toctree::
    :maxdepth: 2
@@ -19,3 +19,4 @@ This will install aiohttp with speedups, and nest_asyncio.
 
    async_client
    async_team
+   async_event
