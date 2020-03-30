@@ -148,7 +148,7 @@ class Team:
         x = []
         for item in data:
             raw = item["opr"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def np_opr(self, season: Season):
@@ -164,7 +164,7 @@ class Team:
         x = []
         for item in data:
             raw = item["np_opr"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def tiebreaker_points(self, season: Season):
@@ -180,7 +180,7 @@ class Team:
         x = []
         for item in data:
             raw = item["tie_breaker_points"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def ranking_points(self, season: Season):
@@ -197,7 +197,7 @@ class Team:
         x = []
         for item in data:
             raw = item["ranking_points"]
-            x.append(int(raw))
+            x.append(float(raw))
         return sum(x)
 
     def qualifying_points(self, season: Season):
