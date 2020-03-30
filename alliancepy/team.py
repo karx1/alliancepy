@@ -1,5 +1,7 @@
+import re
 from alliancepy.http import request
 from alliancepy.season import Season
+from alliancepy.event import Event
 
 
 class Team:
@@ -43,6 +45,19 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+
+    def events(self, season: Season):
+        edict = {}
+        events = request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        for event in events:
+            e = Event(event_key=event["event_key"], headers=self._headers)
+            event_key = event["event_key"]
+            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
+            key = raw_key.replace(" ", "_")
+            key = key.lower()
+            edict[key] = e
+
+        return edict
 
     def _wlt(self):
         data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
