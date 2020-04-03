@@ -1,8 +1,10 @@
 from .async_http import request
 from .async_event import Event
+from .async_executor import ThreadEventLoopPolicy
 from alliancepy.season import Season
 import asyncio
 import nest_asyncio
+from concurrent.futures import ThreadPoolExecutor
 import re
 
 
@@ -50,17 +52,33 @@ class Team:
         self.website = team["website"]
 
     async def events(self, season: Season):
+        """
+        Every event the team has participated in, in a particular season.
+
+        :param season: An alliancepy Season object
+        :type season: :class:`~.season.Season`
+        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
+        event key.
+        :rtype: dict
+        """
         edict = {}
         events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
-        for event in events:
-            e = Event(event_key=event["event_key"], headers=self._headers)
-            event_key = event["event_key"]
-            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
-            key = raw_key.replace(" ", "_")
-            key = key.lower()
-            edict[key] = e
 
-        return edict
+        def _parse_events(ev=events, ed=None):
+            ed = ed or edict
+            for event in ev:
+                e = Event(event_key=event["event_key"], headers=self._headers)
+                event_key = event["event_key"]
+                raw_key = re.sub(r"\d{4}-\w+-", "", event_key)
+                key = raw_key.replace(" ", "_")
+                key = key.lower()
+                ed[key] = e
+
+            return ed
+        asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
+        loop = asyncio.get_event_loop_policy().new_event_loop()
+        future = loop.run_in_executor(ThreadPoolExecutor(), _parse_events)
+        return loop.run_until_complete(future)
 
     async def _wlt(self):
         data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)

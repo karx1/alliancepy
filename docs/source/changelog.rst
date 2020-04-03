@@ -3,6 +3,19 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p3:
+
+v1.3
+-----
+- Create event class - shows information about a particular FTC event.
+- Improve calculation accuracy
+
+.. _vp1p2p1:
+
+v1.2.1
+------
+- Minor bug fix release
+
 .. _vp1p2:
 
 v1.2
