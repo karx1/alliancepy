@@ -61,9 +61,13 @@ class Team:
         for event in events:
             e = Event(event_key=event["event_key"], headers=self._headers)
             event_key = event["event_key"]
-            raw_key = re.sub(r"\d{4}-\w+-", '', event_key)
+            raw_key = e.name
             key = raw_key.replace(" ", "_")
             key = key.lower()
+            if key in edict:
+                raw_key_right = re.sub(r"\d{4}-\w+-", '', event_key)
+                raw_key_right = raw_key_right.lower()
+                key = f"{key}_{raw_key_right}"
             edict[key] = e
 
         return edict
