@@ -3,6 +3,13 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p3p1:
+
+v1.3.1
+-------
+- Miscellaneous changes
+- Minor bug fixes
+
 .. _vp1p3:
 
 v1.3
