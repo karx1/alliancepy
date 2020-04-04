@@ -6,9 +6,14 @@ async def request(target: str, headers: dict):
     async with aiohttp.ClientSession(headers=headers) as session:
         url = f"https://theorangealliance.org/api{target}"
         async with session.get(url) as resp:
-            data = json.loads(await resp.text())
             if resp.status != 200:
-                raise WebException(data["_message"])
+                try:
+                    data = json.loads(await resp.text())
+                except json.decoder.JSONDecodeError:
+                    raise WebException(await resp.text())
+                else:
+                    raise WebException(data["_message"])
+            data = json.loads(await resp.text())
 
     return data
 

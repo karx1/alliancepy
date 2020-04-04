@@ -7,9 +7,14 @@ def request(target: str, headers: dict):
         session.headers.update(headers)
         url = f"https://theorangealliance.org/api{target}"
         with session.get(url) as resp:
-            data = json.loads(resp.text)
             if resp.status_code != 200:
-                raise WebException(data["_message"])
+                try:
+                    data = json.loads(resp.text)
+                except json.decoder.JSONDecodeError:
+                    raise WebException(resp.text)
+                else:
+                    raise WebException(data["_message"])
+            data = json.loads(resp.text)
 
     return data
 
