@@ -35,7 +35,9 @@ class Event:
         self._event_key = event_key
         self._headers = headers
         self._loop = asyncio.get_event_loop()
-        info = self._loop.run_until_complete(request(f"/event/{self._event_key}", headers=self._headers))
+        info = self._loop.run_until_complete(
+            request(f"/event/{self._event_key}", headers=self._headers)
+        )
         info = info[0]
         season_key = int(info["season_key"])
         self.season = Season(season_key).name
@@ -53,7 +55,9 @@ class Event:
         return f"<Event: {self.name} ({self._event_key})>"
 
     async def _rankings(self):
-        resp = await request(f"/event/{self._event_key}/rankings", headers=self._headers)
+        resp = await request(
+            f"/event/{self._event_key}/rankings", headers=self._headers
+        )
         return resp
 
     async def rank(self, team_number: int):

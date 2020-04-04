@@ -55,12 +55,15 @@ class Team:
         The URL of the team's website, if they have any
 
     """
+
     def __init__(self, team_number, headers: dict):
         self._team_number = team_number
         self._headers = headers
         self._loop = asyncio.get_event_loop()
         nest_asyncio.apply(self._loop)
-        team = self._loop.run_until_complete(request(target=f"/team/{team_number}", headers=headers))
+        team = self._loop.run_until_complete(
+            request(target=f"/team/{team_number}", headers=headers)
+        )
         team = team[0]
         self.region = team["region_key"]
         self.league = team["league_key"]
@@ -84,7 +87,9 @@ class Team:
         :rtype: dict
         """
         edict = {}
-        events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        events = await request(
+            f"/team/{self._team_number}/events/{season}", headers=self._headers
+        )
 
         def _parse_events(ev=events, ed=None):
             ed = ed or edict
@@ -101,13 +106,16 @@ class Team:
                 ed[key] = e
 
             return ed
+
         asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
         loop = asyncio.get_event_loop_policy().new_event_loop()
         future = loop.run_in_executor(ThreadPoolExecutor(), _parse_events)
         return loop.run_until_complete(future)
 
     async def _wlt(self):
-        data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
+        data = await request(
+            target=f"/team/{self._team_number}/wlt", headers=self._headers
+        )
         self._wins = data[0]["wins"]
         self._losses = data[0]["losses"]
         self._ties = data[0]["ties"]
@@ -146,7 +154,9 @@ class Team:
         return self._ties
 
     async def _rankings(self, season: Season):
-        rankings = await request(f"/team/{self._team_number}/results/{season}", headers=self._headers)
+        rankings = await request(
+            f"/team/{self._team_number}/results/{season}", headers=self._headers
+        )
         return rankings
 
     async def season_wins(self, season: Season):

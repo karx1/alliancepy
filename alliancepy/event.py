@@ -29,6 +29,7 @@ class Event:
     This is the main class for representation of an FTC event. Instances of this class should not be created directly;
     instead use your :class:`~.team.Team` object.
     """
+
     def __init__(self, event_key: str, headers: dict):
         self._event_key = event_key
         self._headers = headers

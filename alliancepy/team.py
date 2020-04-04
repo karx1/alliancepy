@@ -79,7 +79,9 @@ class Team:
         :rtype: dict
         """
         edict = {}
-        events = request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        events = request(
+            f"/team/{self._team_number}/events/{season}", headers=self._headers
+        )
         for event in events:
             event_key = event["event_key"]
             e = Event(event_key=event_key, headers=self._headers)
@@ -87,7 +89,7 @@ class Team:
             key = raw_key.replace(" ", "_")
             key = key.lower()
             if key in edict:
-                raw_key_right = re.sub(r"\d{4}-\w+-", '', event_key)
+                raw_key_right = re.sub(r"\d{4}-\w+-", "", event_key)
                 raw_key_right = raw_key_right.lower()
                 key = f"{key}_{raw_key_right}"
             edict[key] = e
