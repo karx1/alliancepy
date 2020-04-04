@@ -69,7 +69,7 @@ class Team:
             for event in ev:
                 e = Event(event_key=event["event_key"], headers=self._headers)
                 event_key = event["event_key"]
-                raw_key = e.name
+                raw_key = str(e.name)
                 key = raw_key.replace(" ", "_")
                 key = key.lower()
                 if key in ed:

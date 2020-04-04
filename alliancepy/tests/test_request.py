@@ -58,3 +58,8 @@ class TestRequest(unittest.TestCase):
         team1 = self.loop.run_until_complete(create_team_async(16405))
         team2 = self.loop.run_until_complete(create_team_async(16405))
         self.assertEqual(team1.rookie_year, team2.rookie_year)
+    
+    def test_compat(self):
+        team1 = create_team(16405)
+        team2 = self.loop.run_until_complete(create_team_async(16405))
+        self.assertEqual(team1.rookie_year, team2.rookie_year)
