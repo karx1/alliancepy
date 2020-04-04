@@ -59,9 +59,9 @@ class Team:
         edict = {}
         events = request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
         for event in events:
-            e = Event(event_key=event["event_key"], headers=self._headers)
             event_key = event["event_key"]
-            raw_key = e.name
+            e = Event(event_key=event_key, headers=self._headers)
+            raw_key = str(e.name)
             key = raw_key.replace(" ", "_")
             key = key.lower()
             if key in edict:
