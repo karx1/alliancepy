@@ -28,7 +28,7 @@ class Event:
         return f"<Event: {self.name} ({self._event_key})>"
 
     def _rankings(self):
-        resp = request(f"/events/{self._event_key}/rankings", headers=self._headers)
+        resp = request(f"/event/{self._event_key}/rankings", headers=self._headers)
         return resp
 
     def rank(self, team_number: int):
@@ -41,6 +41,7 @@ class Event:
         :rtype: int
         """
         rankings = self._rankings()
+        rdict = {}
         for rank in rankings:
             if rank["team"]["team_number"] == team_number:
                 raw = rank["rank"]

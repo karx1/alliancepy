@@ -31,7 +31,7 @@ class Event:
         return f"<Event: {self.name} ({self._event_key})>"
 
     async def _rankings(self):
-        resp = await request(f"/events/{self._event_key}/rankings", headers=self._headers)
+        resp = await request(f"/event/{self._event_key}/rankings", headers=self._headers)
         return resp
 
     async def rank(self, team_number: int):
