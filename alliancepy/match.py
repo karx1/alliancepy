@@ -7,8 +7,8 @@ class Match:
         self._headers = headers
         details = request(f"/match/{self._match_key}/details", headers=self._headers)
         self.randomization = int(details[0]["randomization"])
-        self.red = Participant("red", self._match_key, details, self._headers)
-        self.blue = Participant("blue", self._match_key, details, self._headers)
+        self.red = Alliance("red", self._match_key, details, self._headers)
+        self.blue = Alliance("blue", self._match_key, details, self._headers)
 
     def __str__(self):
         return f"<Match ({self._match_key})>"
@@ -26,13 +26,19 @@ class Match:
         return x
 
 
-class Participant:
+class Alliance:
     def __init__(self, alliance: str, match_key: str, details: list, headers: dict):
         self._alliance = alliance
         self._details = details[0]
         self._headers = headers
         self.robot_1 = Robot(self._alliance, 1, match_key, details, self._headers)
         self.robot_2 = Robot(self._alliance, 2, match_key, details, self._headers)
+
+    def __str__(self):
+        return f"<Alliance ({self._alliance})>"
+
+    def __repr__(self):
+        return str(self)
 
     @property
     def min_penalty(self):
