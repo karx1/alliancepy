@@ -1,6 +1,8 @@
 from .async_http import request
+from .async_match import Match
 from alliancepy.season import Season
 import asyncio
+import re
 
 # MIT License
 #
@@ -53,6 +55,22 @@ class Event:
 
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
+
+    async def match(self, match_name):
+        loop = asyncio.get_event_loop()
+        matches = loop.run_until_complete(request(f"/event/{self._event_key}/matches", headers=self._headers))
+        mdict = {}
+        for match in matches:
+            key = match["match_key"]
+            key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
+            value = re.sub(r"-\d+", "", key_right_strip)
+            mdict[key] = value
+        try:
+            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+        except ValueError:
+            raise ValueError("This match does not exist")
+        else:
+            return Match(match_key, headers=self._headers)
 
     async def _rankings(self):
         resp = await request(
