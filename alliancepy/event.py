@@ -1,5 +1,29 @@
 from alliancepy.http import request
 from alliancepy.season import Season
+from alliancepy.match import Match
+import re
+
+# MIT License
+#
+# Copyright (c) 2020 Yash Karandikar
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 
 class Event:
@@ -7,6 +31,7 @@ class Event:
     This is the main class for representation of an FTC event. Instances of this class should not be created directly;
     instead use your :class:`~.team.Team` object.
     """
+
     def __init__(self, event_key: str, headers: dict):
         self._event_key = event_key
         self._headers = headers
@@ -27,8 +52,23 @@ class Event:
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
 
+    def match(self, match_name):
+        matches = request(f"/event/{self._event_key}/matches", headers=self._headers)
+        mdict = {}
+        for match in matches:
+            key = match["match_key"]
+            key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
+            value = re.sub(r"-\d+", "", key_right_strip)
+            mdict[key] = value
+        try:
+            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+        except ValueError:
+            raise ValueError("This match does not exist")
+        else:
+            return Match(match_key, headers=self._headers)
+
     def _rankings(self):
-        resp = request(f"/events/{self._event_key}/rankings", headers=self._headers)
+        resp = request(f"/event/{self._event_key}/rankings", headers=self._headers)
         return resp
 
     def rank(self, team_number: int):

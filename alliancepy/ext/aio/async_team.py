@@ -7,6 +7,28 @@ import nest_asyncio
 from concurrent.futures import ThreadPoolExecutor
 import re
 
+# MIT License
+#
+# Copyright (c) 2020 Yash Karandikar
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 
 class Team:
     """
@@ -33,12 +55,15 @@ class Team:
         The URL of the team's website, if they have any
 
     """
+
     def __init__(self, team_number, headers: dict):
         self._team_number = team_number
         self._headers = headers
         self._loop = asyncio.get_event_loop()
         nest_asyncio.apply(self._loop)
-        team = self._loop.run_until_complete(request(target=f"/team/{team_number}", headers=headers))
+        team = self._loop.run_until_complete(
+            request(target=f"/team/{team_number}", headers=headers)
+        )
         team = team[0]
         self.region = team["region_key"]
         self.league = team["league_key"]
@@ -62,14 +87,16 @@ class Team:
         :rtype: dict
         """
         edict = {}
-        events = await request(f"/team/{self._team_number}/events/{season}", headers=self._headers)
+        events = await request(
+            f"/team/{self._team_number}/events/{season}", headers=self._headers
+        )
 
         def _parse_events(ev=events, ed=None):
             ed = ed or edict
             for event in ev:
                 e = Event(event_key=event["event_key"], headers=self._headers)
                 event_key = event["event_key"]
-                raw_key = e.name
+                raw_key = str(e.name)
                 key = raw_key.replace(" ", "_")
                 key = key.lower()
                 if key in ed:
@@ -79,13 +106,16 @@ class Team:
                 ed[key] = e
 
             return ed
+
         asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
         loop = asyncio.get_event_loop_policy().new_event_loop()
         future = loop.run_in_executor(ThreadPoolExecutor(), _parse_events)
         return loop.run_until_complete(future)
 
     async def _wlt(self):
-        data = await request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
+        data = await request(
+            target=f"/team/{self._team_number}/wlt", headers=self._headers
+        )
         self._wins = data[0]["wins"]
         self._losses = data[0]["losses"]
         self._ties = data[0]["ties"]
@@ -124,7 +154,9 @@ class Team:
         return self._ties
 
     async def _rankings(self, season: Season):
-        rankings = await request(f"/team/{self._team_number}/results/{season}", headers=self._headers)
+        rankings = await request(
+            f"/team/{self._team_number}/results/{season}", headers=self._headers
+        )
         return rankings
 
     async def season_wins(self, season: Season):
