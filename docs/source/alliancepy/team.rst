@@ -1,5 +1,5 @@
-alliancepy.team module
-----------------------
+Team
+----
 
 .. automodule:: alliancepy.team
 	:members:

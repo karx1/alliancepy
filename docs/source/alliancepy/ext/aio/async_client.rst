@@ -1,5 +1,5 @@
-aio.async_client module
-------------------------
+AsyncClient
+-----------
 
 .. automodule:: alliancepy.ext.aio.async_client
 	:members:

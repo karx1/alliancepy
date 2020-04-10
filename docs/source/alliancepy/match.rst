@@ -1,5 +1,5 @@
-alliancepy.match module
------------------------
+Match
+-----
 
 .. automodule:: alliancepy.match
 	:members:

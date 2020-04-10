@@ -1,5 +1,5 @@
-aio.async_match module
-----------------------
+Match
+-----
 
 .. automodule:: alliancepy.ext.aio.async_match
 	:members:

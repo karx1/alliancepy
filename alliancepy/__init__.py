@@ -1,5 +1,6 @@
 from alliancepy.client import Client
 from alliancepy.season import Season
+from alliancepy.match_type import MatchType
 
 # MIT License
 #
@@ -23,4 +24,4 @@ from alliancepy.season import Season
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "1.3.2"
+__version__ = "1.4"

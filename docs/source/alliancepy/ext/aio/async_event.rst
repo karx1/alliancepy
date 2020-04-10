@@ -1,5 +1,5 @@
-aio.async_event module
------------------------
+Event
+-----
 
 .. automodule:: alliancepy.ext.aio.async_event
 	:members:

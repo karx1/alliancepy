@@ -1,6 +1,7 @@
 from alliancepy.http import request
 from alliancepy.season import Season
 from alliancepy.match import Match
+from alliancepy.match_type import MatchType
 import re
 
 # MIT License
@@ -65,15 +66,23 @@ class Event:
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
 
-    def match(self, match_name):
+    def match(self, match_type: MatchType, match_number: int):
         """
         Get one of the matches for the event.
 
-        :param match_name: The name of the match. See :ref:`match_name` for more information.
-        :type match_name: str
+        :param match_type: The type of the match. See :ref:`match_type` for more information.
+        :type match_type: :class:`~alliancepy.match_type.MatchType`
+        :param match_number: The number of the match.
+        :type match_number: int
         :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
         :rtype: :class:`alliancepy.match.Match`
         """
+        if len(str(match_number)) == 1:
+            match_name = f"{match_type.value}00{match_number}"
+        elif len(str(match_number)) == 2:
+            match_name = f"{match_type.value}0{match_number}"
+        else:
+            match_name = f"{match_type.value}{match_number}"
         matches = request(f"/event/{self._event_key}/matches", headers=self._headers)
         mdict = {}
         for match in matches:
