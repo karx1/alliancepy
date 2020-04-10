@@ -1,5 +1,7 @@
 from alliancepy.http import request
 from alliancepy.season import Season
+from alliancepy.match import Match
+import re
 
 # MIT License
 #
@@ -49,6 +51,21 @@ class Event:
 
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
+
+    def match(self, match_name):
+        matches = request(f"/event/{self._event_key}/matches", headers=self._headers)
+        mdict = {}
+        for match in matches:
+            key = match["match_key"]
+            key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
+            value = re.sub(r"-\d+", "", key_right_strip)
+            mdict[key] = value
+        try:
+            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+        except ValueError:
+            raise ValueError("This match does not exist")
+        else:
+            return Match(match_key, headers=self._headers)
 
     def _rankings(self):
         resp = request(f"/event/{self._event_key}/rankings", headers=self._headers)
