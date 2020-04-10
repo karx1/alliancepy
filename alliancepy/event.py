@@ -30,6 +30,19 @@ class Event:
     """
     This is the main class for representation of an FTC event. Instances of this class should not be created directly;
     instead use your :class:`~.team.Team` object.
+
+    season
+        The season in which the event occurred.
+    region
+        The key of the region in which the event occured.
+    league
+        The key of the league the event occured in, if any.
+    name
+        The name of the event
+    location
+        The location of the event, in City, State/Province, Country form.
+    venue
+        The venue of the event.
     """
 
     def __init__(self, event_key: str, headers: dict):
