@@ -1,5 +1,5 @@
-alliancepy.season module
-------------------------
+Season
+------
 
 .. automodule:: alliancepy.season
 	:members:

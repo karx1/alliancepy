@@ -1,5 +1,5 @@
-alliancepy.client module
-------------------------
+Client
+------
 
 .. automodule:: alliancepy.client
 	:members:

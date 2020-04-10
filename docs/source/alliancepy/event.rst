@@ -1,5 +1,5 @@
-alliancepy.event module
------------------------
+Event
+-----
 
 .. automodule:: alliancepy.event
 	:members:

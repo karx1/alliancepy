@@ -1,5 +1,5 @@
-aio.async_team module
-------------------------
+Team
+----
 
 .. automodule:: alliancepy.ext.aio.async_team
 	:members:
