@@ -1,6 +1,7 @@
 from .async_http import request
 from .async_match import Match
 from alliancepy.season import Season
+from alliancepy.match_type import MatchType
 import asyncio
 import re
 
@@ -69,7 +70,7 @@ class Event:
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
 
-    async def match(self, match_name):
+    async def match(self, match_type: MatchType, match_number: int):
         """
         Get one of the matches for the event.
 
@@ -78,6 +79,12 @@ class Event:
         :return: A :class:`~.async_match.Match` object containing details about the specific match.
         :rtype: :class:`.async_match.Match`
         """
+        if len(str(match_number)) == 1:
+            match_name = f"{match_type.value}00{match_number}"
+        elif len(str(match_number)) == 2:
+            match_name = f"{match_type.value}0{match_number}"
+        else:
+            match_name = f"{match_type.value}{match_number}"
         loop = asyncio.get_event_loop()
         matches = loop.run_until_complete(request(f"/event/{self._event_key}/matches", headers=self._headers))
         mdict = {}
