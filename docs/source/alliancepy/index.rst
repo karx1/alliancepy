@@ -9,3 +9,4 @@ alliancepy
    season
    team
    event
+   match

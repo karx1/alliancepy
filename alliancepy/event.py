@@ -1,5 +1,7 @@
 from alliancepy.http import request
 from alliancepy.season import Season
+from alliancepy.match import Match
+import re
 
 # MIT License
 #
@@ -28,6 +30,19 @@ class Event:
     """
     This is the main class for representation of an FTC event. Instances of this class should not be created directly;
     instead use your :class:`~.team.Team` object.
+
+    season
+        The season in which the event occurred.
+    region
+        The key of the region in which the event occured.
+    league
+        The key of the league the event occured in, if any.
+    name
+        The name of the event
+    location
+        The location of the event, in City, State/Province, Country form.
+    venue
+        The venue of the event.
     """
 
     def __init__(self, event_key: str, headers: dict):
@@ -49,6 +64,29 @@ class Event:
 
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
+
+    def match(self, match_name):
+        """
+        Get one of the matches for the event.
+
+        :param match_name: The name of the match. See :ref:`match_name` for more information.
+        :type match_name: str
+        :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
+        :rtype: :class:`alliancepy.match.Match`
+        """
+        matches = request(f"/event/{self._event_key}/matches", headers=self._headers)
+        mdict = {}
+        for match in matches:
+            key = match["match_key"]
+            key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
+            value = re.sub(r"-\d+", "", key_right_strip)
+            mdict[key] = value
+        try:
+            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+        except ValueError:
+            raise ValueError("This match does not exist")
+        else:
+            return Match(match_key, headers=self._headers)
 
     def _rankings(self):
         resp = request(f"/event/{self._event_key}/rankings", headers=self._headers)

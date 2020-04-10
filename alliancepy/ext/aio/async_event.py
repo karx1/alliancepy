@@ -1,6 +1,8 @@
 from .async_http import request
+from .async_match import Match
 from alliancepy.season import Season
 import asyncio
+import re
 
 # MIT License
 #
@@ -29,6 +31,19 @@ class Event:
     """
     This is the asynchronous version of the normal :class:`~alliancepy.event.Event` class.
     Instances of this class should not be created directly; instead use your :class:`~.team.Team` object.
+
+    season
+        The season in which the event occurred.
+    region
+        The key of the region in which the event occured.
+    league
+        The key of the league the event occured in, if any.
+    name
+        The name of the event
+    location
+        The location of the event, in City, State/Province, Country form.
+    venue
+        The venue of the event.
     """
 
     def __init__(self, event_key: str, headers: dict):
@@ -53,6 +68,30 @@ class Event:
 
     def __repr__(self):
         return f"<Event: {self.name} ({self._event_key})>"
+
+    async def match(self, match_name):
+        """
+        Get one of the matches for the event.
+
+        :param match_name: The name of the match. See :ref:`match_name` for more information.
+        :type match_name: str
+        :return: A :class:`~.async_match.Match` object containing details about the specific match.
+        :rtype: :class:`.async_match.Match`
+        """
+        loop = asyncio.get_event_loop()
+        matches = loop.run_until_complete(request(f"/event/{self._event_key}/matches", headers=self._headers))
+        mdict = {}
+        for match in matches:
+            key = match["match_key"]
+            key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
+            value = re.sub(r"-\d+", "", key_right_strip)
+            mdict[key] = value
+        try:
+            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+        except ValueError:
+            raise ValueError("This match does not exist")
+        else:
+            return Match(match_key, headers=self._headers)
 
     async def _rankings(self):
         resp = await request(
