@@ -70,8 +70,10 @@ class Event:
         """
         Get one of the matches for the event.
 
-        :param match_name: The name of the match. See :ref:`match_name` for more information.
-        :type match_name: str
+        :param match_type: The type of the match. See :ref:`match_type` for more information.
+        :type match_type: :class:`~alliancepy.match_type.MatchType`
+        :param match_number: The number of the match.
+        :type match_number: int
         :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
         :rtype: :class:`alliancepy.match.Match`
         """
