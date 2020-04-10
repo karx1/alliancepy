@@ -10,3 +10,4 @@ alliancepy
    team
    event
    match
+   match_type
