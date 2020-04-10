@@ -70,6 +70,14 @@ class Event:
         return f"<Event: {self.name} ({self._event_key})>"
 
     async def match(self, match_name):
+        """
+        Get one of the matches for the event.
+
+        :param match_name: The name of the match. See :ref:`match_name` for more information.
+        :type match_name: str
+        :return: A :class:`~.async_match.Match` object containing details about the specific match.
+        :rtype: :class:`.async_match.Match`
+        """
         loop = asyncio.get_event_loop()
         matches = loop.run_until_complete(request(f"/event/{self._event_key}/matches", headers=self._headers))
         mdict = {}

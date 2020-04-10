@@ -66,6 +66,14 @@ class Event:
         return f"<Event: {self.name} ({self._event_key})>"
 
     def match(self, match_name):
+        """
+        Get one of the matches for the event.
+
+        :param match_name: The name of the match. See :ref:`match_name` for more information.
+        :type match_name: str
+        :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
+        :rtype: :class:`alliancepy.match.Match`
+        """
         matches = request(f"/event/{self._event_key}/matches", headers=self._headers)
         mdict = {}
         for match in matches:
