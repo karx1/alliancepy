@@ -3,6 +3,14 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p4:
+
+v1.4
+-----
+- Create :class:`~alliancepy.match.Match` class
+- Bug fixes
+- Performance improvements
+
 .. _vp1p3p1:
 
 v1.3.1
