@@ -20,3 +20,4 @@ This will install aiohttp with speedups, and nest_asyncio. See :ref:`install` fo
    async_client
    async_team
    async_event
+   async_match
