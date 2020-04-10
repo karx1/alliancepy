@@ -1,5 +1,6 @@
 from alliancepy.client import Client
 from alliancepy.season import Season
+from alliancepy.match_type import MatchType
 
 # MIT License
 #
