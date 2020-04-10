@@ -2,6 +2,17 @@ from alliancepy.http import request
 
 
 class Match:
+    """
+    An object containing the details of an FTC match. Instances of this class should not be created directly. Instead,
+    use your :class:`~alliancepy.event.Event` object.
+
+    randomization
+        The randomization of the stones and skystones at the beginning of the match.
+    red
+        An :class:`Alliance` object containing the details of the red alliance of the match.
+    blue
+        An :class:`Alliance` object containing the details of the blue alliance of the match.
+    """
     def __init__(self, match_key: str, headers: dict):
         self._match_key = match_key
         self._headers = headers
@@ -18,6 +29,12 @@ class Match:
 
     @property
     def participants(self):
+        """
+        The participants of the match.
+
+        :return: The team numbers in a list
+        :rtype: List[int]
+        """
         participants = request(f"/match/{self._match_key}/participants", headers=self._headers)
         x = []
         for part in participants:
@@ -27,6 +44,15 @@ class Match:
 
 
 class Alliance:
+    """
+    An object representing a match alliance. Instances of this class should not be created directly. Instead,
+    use your :class:`Match` object.
+
+    robot_1
+        A :class:`Robot` object that represents the first team's robot.
+    robot_2
+        A :class:`Robot` object that represents the second team's robot.
+    """
     def __init__(self, alliance: str, match_key: str, details: list, headers: dict):
         self._alliance = alliance
         self._details = details[0]
@@ -42,16 +68,30 @@ class Alliance:
 
     @property
     def min_penalty(self):
+        """
+        The amount of minor penalties an alliance earned.
+
+        :rtype: int
+        """
         key = f"{self._alliance}_min_pen"
         return int(self._details[key])
 
     @property
     def maj_penalty(self):
+        """
+        The amount of major penalites an alliance earned.
+
+        :rtype: int
+        """
         key = f"{self._alliance}_maj_pen"
         return int(self._details[key])
 
     @property
     def auto_stones(self):
+        """A list of the stones the alliance stacked in autonomous.
+
+        :rtype: List[str]
+        """
         x = []
         for item in self._details[self._alliance]:
             if "auto_stone_" in item:
@@ -60,10 +100,21 @@ class Alliance:
 
     @property
     def foundation(self):
+        """
+        Whether the alliance repositioned the foundation suring autonomous or not.
+
+        :rtype: bool
+        """
         return self._details[self._alliance]["foundation_repositioned"]
 
     @property
     def teleop(self):
+        """
+        Returns a dict containing integer values.
+        Contains "delivered", "placed", and "returned".
+
+        :rtype: dict[str: int]
+        """
         delivered = self._details[self._alliance]["tele_delivered"]
         placed = self._details[self._alliance]["tele_placed"]
         returned = self._details[self._alliance]["tele_returned"]
@@ -76,6 +127,10 @@ class Alliance:
 
 
 class Robot:
+    """
+    An object containing details about a robot. Instances of this class should not be created directly. Instead,
+    use your :class:`Alliance` object.
+    """
     def __init__(self, alliance: str, robot_number: int, match_key: str, details: list, headers: dict):
         self._alliance = alliance
         self._robot_number = robot_number
@@ -85,24 +140,43 @@ class Robot:
 
     @property
     def parked_skybridge(self):
+        """Whether the robot parked under the skybridge or not
+
+        :rtype: bool
+        """
         key = f"robot_{self._robot_number}"
         value = self._details[self._alliance][key]["nav"]
         return bool(value)
 
     @property
     def parked_endgame(self):
+        """
+        Whether the robot parked at the end of the match or not.
+
+        :rtype: bool
+        """
         key = f"robot_{self._robot_number}"
         value = self._details[self._alliance][key]["parked"]
         return bool(value)
 
     @property
     def capstone_level(self):
+        """
+        The level of the capstone at the end of the match.
+
+        :rtype: int
+        """
         key = f"robot_{self._robot_number}"
         value = self._details[self._alliance][key]["parked"]
         return int(value)
     
     @property
     def owner(self):
+        """The team that owns the bot.
+
+        :return: The team's team number as an integer
+        :rtype: int
+        """
         participants = request(f"/match/{self._match_key}/participants", headers=self._headers)
         for part in participants:
             station = str(part["station"])
