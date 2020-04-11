@@ -88,7 +88,9 @@ class Event:
         else:
             match_name = f"{match_type.value}{match_number}"
         loop = asyncio.get_event_loop()
-        matches = loop.run_until_complete(request(f"/event/{self._event_key}/matches", headers=self._headers))
+        matches = loop.run_until_complete(
+            request(f"/event/{self._event_key}/matches", headers=self._headers)
+        )
         mdict = {}
         for match in matches:
             key = match["match_key"]
@@ -96,7 +98,9 @@ class Event:
             value = re.sub(r"-\d+", "", key_right_strip)
             mdict[key] = value
         try:
-            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+            match_key = list(mdict.keys())[
+                list(mdict.values()).index(match_name.upper())
+            ]
         except ValueError:
             raise ValueError("This match does not exist")
         else:
