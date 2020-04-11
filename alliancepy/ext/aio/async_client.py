@@ -1,4 +1,7 @@
 from .async_team import Team
+from .async_executor import ThreadEventLoopPolicy
+import asyncio
+import nest_asyncio
 
 # MIT License
 #
@@ -42,6 +45,9 @@ class AsyncClient:
             "x-toa-key": api_key,
             "x-application-origin": application_name,
         }
+        asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
+        loop = asyncio.get_event_loop_policy().get_event_loop()
+        nest_asyncio.apply(loop)
 
     async def team(self, team_number: int):
         """
