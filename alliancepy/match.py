@@ -1,5 +1,27 @@
 from alliancepy.http import request
 
+# MIT License
+#
+# Copyright (c) 2020 Yash Karandikar
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 
 class Match:
     """
@@ -13,6 +35,7 @@ class Match:
     blue
         An :class:`Alliance` object containing the details of the blue alliance of the match.
     """
+
     def __init__(self, match_key: str, headers: dict):
         self._match_key = match_key
         self._headers = headers
@@ -35,7 +58,9 @@ class Match:
         :return: The team numbers in a list
         :rtype: List[int]
         """
-        participants = request(f"/match/{self._match_key}/participants", headers=self._headers)
+        participants = request(
+            f"/match/{self._match_key}/participants", headers=self._headers
+        )
         x = []
         for part in participants:
             raw = part["team_key"]
@@ -53,6 +78,7 @@ class Alliance:
     robot_2
         A :class:`Robot` object that represents the second team's robot.
     """
+
     def __init__(self, alliance: str, match_key: str, details: list, headers: dict):
         self._alliance = alliance
         self._details = details[0]
@@ -118,11 +144,7 @@ class Alliance:
         delivered = self._details[self._alliance]["tele_delivered"]
         placed = self._details[self._alliance]["tele_placed"]
         returned = self._details[self._alliance]["tele_returned"]
-        x = {
-            "delivered": delivered,
-            "returned": returned,
-            "placed": placed
-        }
+        x = {"delivered": delivered, "returned": returned, "placed": placed}
         return x
 
 
@@ -131,7 +153,15 @@ class Robot:
     An object containing details about a robot. Instances of this class should not be created directly. Instead,
     use your :class:`Alliance` object.
     """
-    def __init__(self, alliance: str, robot_number: int, match_key: str, details: list, headers: dict):
+
+    def __init__(
+        self,
+        alliance: str,
+        robot_number: int,
+        match_key: str,
+        details: list,
+        headers: dict,
+    ):
         self._alliance = alliance
         self._robot_number = robot_number
         self._match_key = match_key
@@ -169,7 +199,7 @@ class Robot:
         key = f"robot_{self._robot_number}"
         value = self._details[self._alliance][key]["parked"]
         return int(value)
-    
+
     @property
     def owner(self):
         """The team that owns the bot.
@@ -177,7 +207,9 @@ class Robot:
         :return: The team's team number as an integer
         :rtype: int
         """
-        participants = request(f"/match/{self._match_key}/participants", headers=self._headers)
+        participants = request(
+            f"/match/{self._match_key}/participants", headers=self._headers
+        )
         for part in participants:
             station = str(part["station"])
             if int(station[1]) == self._robot_number:

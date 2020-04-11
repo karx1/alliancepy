@@ -91,7 +91,9 @@ class Event:
             value = re.sub(r"-\d+", "", key_right_strip)
             mdict[key] = value
         try:
-            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+            match_key = list(mdict.keys())[
+                list(mdict.values()).index(match_name.upper())
+            ]
         except ValueError:
             raise ValueError("This match does not exist")
         else:
