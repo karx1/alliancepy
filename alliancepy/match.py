@@ -1,5 +1,6 @@
 from alliancepy.http import request
 
+
 # MIT License
 #
 # Copyright (c) 2020 Yash Karandikar
@@ -155,12 +156,12 @@ class Robot:
     """
 
     def __init__(
-        self,
-        alliance: str,
-        robot_number: int,
-        match_key: str,
-        details: list,
-        headers: dict,
+            self,
+            alliance: str,
+            robot_number: int,
+            match_key: str,
+            details: list,
+            headers: dict,
     ):
         self._alliance = alliance
         self._robot_number = robot_number
@@ -207,10 +208,16 @@ class Robot:
         :return: The team's team number as an integer
         :rtype: int
         """
-        participants = request(
-            f"/match/{self._match_key}/participants", headers=self._headers
-        )
-        for part in participants:
-            station = str(part["station"])
-            if int(station[1]) == self._robot_number:
-                return int(part["team_key"])
+        match = request(f"/match/{self._match_key}", headers=self._headers)
+        participants = list(filter(lambda p: p["station_status"] == 1, match[0]["participants"]))
+        if self._alliance == "red" and self._robot_number == 1:
+            raw = participants[0]["team_key"]
+        elif self._alliance == "red" and self._robot_number == 2:
+            raw = participants[1]["team_key"]
+        elif self._alliance == "blue" and self._robot_number == 1:
+            raw = participants[2]["team_key"]
+        elif self._alliance == "blue" and self._robot_number == 2:
+            raw = participants[3]["team_key"]
+        else:
+            raise ValueError("Something went wrong, please try again")
+        return int(raw)
