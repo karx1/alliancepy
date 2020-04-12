@@ -41,4 +41,8 @@ async def request(target: str, headers: dict):
 
 
 class WebException(Exception):
-    pass
+    def __init__(self, message: str):
+        if message == "The supplied API key was not found.":
+            message = "The supplied API key was invalid."
+        self.message = message
+        super().__init__(message)
