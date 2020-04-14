@@ -66,7 +66,9 @@ class Event:
         location = f"{info['city']} {info['state_prov']}, {info['country']}"
         self.location = location
         self.venue = info["venue"]
-        logger.info(f"Initialized asynchronous 'Event' object with event key of {self._event_key}")
+        logger.info(
+            f"Initialized asynchronous 'Event' object with event key of {self._event_key}"
+        )
 
     def __str__(self):
         return f"<Event: {self.name}>"

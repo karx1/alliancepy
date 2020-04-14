@@ -70,7 +70,9 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
-        logger.info(f"Initialized 'Team' object with team number of {self._team_number}")
+        logger.info(
+            f"Initialized 'Team' object with team number of {self._team_number}"
+        )
 
     def events(self, season: Season):
         """

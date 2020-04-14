@@ -81,7 +81,9 @@ class Event:
         :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
         :rtype: :class:`alliancepy.match.Match`
         """
-        logger.info(f"Got request to create Match object with type {match_type} and number of {match_number}")
+        logger.info(
+            f"Got request to create Match object with type {match_type} and number of {match_number}"
+        )
         if len(str(match_number)) == 1:
             match_name = f"{match_type.value}00{match_number}"
         elif len(str(match_number)) == 2:

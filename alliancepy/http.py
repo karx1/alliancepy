@@ -34,7 +34,9 @@ def request(target: str, headers: dict):
         logger.info(f"Recieved request to {url}")
         with session.get(url) as resp:
             if resp.status_code != 200:
-                logger.info(f"Status code was not 200 ({resp.status_code}), attempting to gather error message")
+                logger.info(
+                    f"Status code was not 200 ({resp.status_code}), attempting to gather error message"
+                )
                 try:
                     data = json.loads(resp.text)
                 except json.decoder.JSONDecodeError:
