@@ -2,6 +2,7 @@ from .async_team import Team
 from .async_executor import ThreadEventLoopPolicy
 import asyncio
 import nest_asyncio
+import logging
 
 # MIT License
 #
@@ -24,6 +25,8 @@ import nest_asyncio
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+logger = logging.getLogger(__name__)
 
 
 class AsyncClient:
@@ -48,6 +51,7 @@ class AsyncClient:
         asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
         loop = asyncio.get_event_loop_policy().get_event_loop()
         nest_asyncio.apply(loop)
+        logger.info("Initialized Client object")
 
     async def team(self, team_number: int):
         """
@@ -58,4 +62,5 @@ class AsyncClient:
         :return: The Team object
         :rtype: :class:`~.async.Team`
         """
+        logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)

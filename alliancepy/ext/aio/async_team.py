@@ -4,6 +4,7 @@ from alliancepy.season import Season
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import re
+import logging
 
 # MIT License
 #
@@ -26,6 +27,8 @@ import re
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+logger = logging.getLogger(__name__)
 
 
 class Team:
@@ -72,6 +75,7 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+        logger.info(f"Initialized asynchronous 'Team' object with team number of {self._team_number}")
 
     async def events(self, season: Season):
         """
@@ -109,6 +113,7 @@ class Team:
         return loop.run_until_complete(future)
 
     async def _wlt(self):
+        logger.info("Fetching WLT data")
         data = await request(
             target=f"/team/{self._team_number}/wlt", headers=self._headers
         )
@@ -150,6 +155,7 @@ class Team:
         return self._ties
 
     async def _rankings(self, season: Season):
+        logger.info("Getting ranking data")
         rankings = await request(
             f"/team/{self._team_number}/results/{season}", headers=self._headers
         )

@@ -1,4 +1,5 @@
 from alliancepy.team import Team
+import logging
 
 # MIT License
 #
@@ -22,6 +23,8 @@ from alliancepy.team import Team
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+logger = logging.getLogger(__name__)
+
 
 class Client:
     """
@@ -43,6 +46,7 @@ class Client:
             "x-toa-key": api_key,
             "x-application-origin": application_name,
         }
+        logger.info("Initialized Client object")
 
     def team(self, team_number: int):
         """Create a :class:`~.team.Team` object.
@@ -52,4 +56,5 @@ class Client:
         :return: The Team object
         :rtype: :class:`~.team.Team`
         """
+        logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)

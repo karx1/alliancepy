@@ -1,4 +1,5 @@
 from alliancepy.http import request
+import logging
 
 
 # MIT License
@@ -23,6 +24,8 @@ from alliancepy.http import request
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+logger = logging.getLogger(__name__)
+
 
 class Match:
     """
@@ -44,6 +47,7 @@ class Match:
         self.randomization = int(details[0]["randomization"])
         self.red = Alliance("red", self._match_key, details, self._headers)
         self.blue = Alliance("blue", self._match_key, details, self._headers)
+        logger.info(f"Initialized Match object with match key of {self._match_key}")
 
     def __str__(self):
         return f"<Match ({self._match_key})>"
@@ -86,6 +90,7 @@ class Alliance:
         self._headers = headers
         self.robot_1 = Robot(self._alliance, 1, match_key, details, self._headers)
         self.robot_2 = Robot(self._alliance, 2, match_key, details, self._headers)
+        logger.info(f"Initialized Alliance object with alliance name of {self._alliance}")
 
     def __str__(self):
         return f"<Alliance ({self._alliance})>"
@@ -168,6 +173,7 @@ class Robot:
         self._match_key = match_key
         self._details = details[0]
         self._headers = headers
+        logger.info(f"Initialized Robot object with alliance {self._alliance} and robot number of {self._robot_number}")
 
     @property
     def parked_skybridge(self):

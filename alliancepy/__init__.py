@@ -1,6 +1,7 @@
 from alliancepy.client import Client
 from alliancepy.season import Season
 from alliancepy.match_type import MatchType
+import logging
 
 # MIT License
 #
@@ -25,3 +26,12 @@ from alliancepy.match_type import MatchType
 # SOFTWARE.
 
 __version__ = "1.4.2"
+
+try:
+    from logging import NullHandler
+except ImportError:
+    class NullHandler(logging.Handler):
+        def emit(self, record):
+            pass
+
+logging.getLogger(__name__).addHandler(NullHandler())
