@@ -2,6 +2,7 @@ import re
 from alliancepy.http import request
 from alliancepy.season import Season
 from alliancepy.event import Event
+import logging
 
 # MIT License
 #
@@ -24,6 +25,8 @@ from alliancepy.event import Event
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+logger = logging.getLogger(__name__)
 
 
 class Team:
@@ -67,6 +70,7 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+        logger.info(f"Initialized 'Team' object with team number of {self._team_number}")
 
     def events(self, season: Season):
         """
@@ -97,6 +101,7 @@ class Team:
         return edict
 
     def _wlt(self):
+        logger.info("Fetching WLT data")
         data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         return data[0]
 
@@ -133,6 +138,7 @@ class Team:
         return int(data)
 
     def _rankings(self, season: Season):
+        logger.info("Getting ranking data")
         rankings = request(
             f"/team/{self._team_number}/results/{season}", headers=self._headers
         )
