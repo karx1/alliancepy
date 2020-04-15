@@ -1,5 +1,7 @@
 import aiohttp
 import json
+import logging
+import asyncio
 
 # MIT License
 #
@@ -23,19 +25,25 @@ import json
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+logger = logging.getLogger(__name__)
+
 
 async def request(target: str, headers: dict):
-    async with aiohttp.ClientSession(headers=headers) as session:
-        url = f"https://theorangealliance.org/api{target}"
-        async with session.get(url) as resp:
-            if resp.status != 200:
-                try:
-                    data = json.loads(await resp.text())
-                except json.decoder.JSONDecodeError:
-                    raise WebException(await resp.text())
-                else:
-                    raise WebException(data["_message"])
+    session = aiohttp.ClientSession(headers=headers)
+    url = f"https://theorangealliance.org/api{target}"
+    task = asyncio.create_task(session.get(url, headers=headers))
+    resp = await task
+    if resp.status != 200:
+        logger.info(f"Status code was not 200 ({resp.status}), attempting to gather error message")
+        try:
             data = json.loads(await resp.text())
+        except json.decoder.JSONDecodeError:
+            raise WebException(await resp.text())
+        else:
+            raise WebException(data["_message"])
+    data = json.loads(await resp.text())
+    logger.info(f"Request succsessful, returning response to origin")
+    await session.close()
 
     return data
 
@@ -45,4 +53,5 @@ class WebException(Exception):
         if message == "The supplied API key was not found.":
             message = "The supplied API key was invalid."
         self.message = message
+        logger.error(f"fatal: {self.message}")
         super().__init__(message)

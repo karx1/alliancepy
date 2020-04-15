@@ -1,5 +1,6 @@
 from .async_http import request
 import asyncio
+import logging
 
 # MIT License
 #
@@ -23,10 +24,13 @@ import asyncio
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+logger = logging.getLogger(__name__)
+
 
 class Match:
     """
-    An asynchronous object containing the details of an FTC match. Instances of this class should not be created directly. Instead,
+    An asynchronous object containing the details of an FTC match. Instances of this class should not be created
+    directly. Instead,
     use your :class:`~.async_event.Event` object.
 
     randomization
@@ -47,6 +51,9 @@ class Match:
         self.randomization = int(details[0]["randomization"])
         self.red = Alliance("red", self._match_key, details, self._headers)
         self.blue = Alliance("blue", self._match_key, details, self._headers)
+        logger.info(
+            f"Initialized asynchronous Match object with match key of {self._match_key}"
+        )
 
     def __str__(self):
         return f"<Match ({self._match_key})>"
@@ -90,6 +97,9 @@ class Alliance:
         self._headers = headers
         self.robot_1 = Robot(self._alliance, 1, match_key, details, self._headers)
         self.robot_2 = Robot(self._alliance, 2, match_key, details, self._headers)
+        logger.info(
+            f"Initialized asynchronous Alliance object with alliance name of {self._alliance}"
+        )
 
     def __str__(self):
         return f"<Alliance ({self._alliance})>"
@@ -172,6 +182,8 @@ class Robot:
         self._match_key = match_key
         self._details = details[0]
         self._headers = headers
+        log_str = f"Initialized asynchronous Robot object with alliance {alliance} and robot number of {robot_number}"
+        logger.info(log_str)
 
     @property
     def parked_skybridge(self):
@@ -213,8 +225,12 @@ class Robot:
         :rtype: int
         """
         loop = asyncio.get_event_loop()
-        match = loop.run_until_complete(request(f"/match/{self._match_key}", headers=self._headers))
-        participants = list(filter(lambda p: p["station_status"] == 1, match[0]["participants"]))
+        match = loop.run_until_complete(
+            request(f"/match/{self._match_key}", headers=self._headers)
+        )
+        participants = list(
+            filter(lambda p: p["station_status"] == 1, match[0]["participants"])
+        )
         if self._alliance == "red" and self._robot_number == 1:
             raw = participants[0]["team_key"]
         elif self._alliance == "red" and self._robot_number == 2:

@@ -2,6 +2,7 @@ import re
 from alliancepy.http import request
 from alliancepy.season import Season
 from alliancepy.event import Event
+import logging
 
 # MIT License
 #
@@ -24,6 +25,8 @@ from alliancepy.event import Event
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+logger = logging.getLogger(__name__)
 
 
 class Team:
@@ -67,16 +70,19 @@ class Team:
         self.rookie_year = team["rookie_year"]
         self.last_active = team["last_active"]
         self.website = team["website"]
+        logger.info(
+            f"Initialized 'Team' object with team number of {self._team_number}"
+        )
 
     def events(self, season: Season):
         """
         Every event the team has participated in, in a particular season.
 
-        :param season: An alliancepy Season object
-        :type season: :class:`~.season.Season`
-        :return: A dict containing the :class:`~.event.Event` objects. The key names are shortened versions of the TOA
-        event key.
-        :rtype: dict
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Returns:
+            dict: A dict containing the :class:`~alliancepy.event.Event` objects. The key names correspont to the name \
+            of the event.
         """
         edict = {}
         events = request(
@@ -97,6 +103,7 @@ class Team:
         return edict
 
     def _wlt(self):
+        logger.info("Fetching WLT data")
         data = request(target=f"/team/{self._team_number}/wlt", headers=self._headers)
         return data[0]
 
@@ -133,6 +140,7 @@ class Team:
         return int(data)
 
     def _rankings(self, season: Season):
+        logger.info("Getting ranking data")
         rankings = request(
             f"/team/{self._team_number}/results/{season}", headers=self._headers
         )
@@ -142,10 +150,10 @@ class Team:
         """
         The amount of times a team has won a match in a particular season.
 
-        :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
-        :return: The number of wins in the specified season
-        :rtype: int
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            int: The number of wins in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -158,10 +166,10 @@ class Team:
         """
         The amount of times a team has lost a match in a particular season.
 
-        :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
-        :return: The number of losses in the specified season
-        :rtype: int
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            int: The number of losses in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -174,10 +182,10 @@ class Team:
         """
         The amount of times a team has tied in a match in a particular season.
 
-        :param season: A valid TOA season key
-        :type season: :class:`~.season.Season`
-        :return: The number of ties in the specified season
-        :rtype: int
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            int: The number of ties in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -191,10 +199,10 @@ class Team:
         OPR stands for Offensive Power Rating, which is a system to attempt to deduce the average point contribution of
         a team to an alliance. Penalties are also factored in.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's OPR in the specified season
-        :rtype: float
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            float: The team's OPR in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -207,10 +215,10 @@ class Team:
         """
         NP_OPR is just OPR, but penalties are not factored in.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's NP_OPR (OPR without Penalties) in the specified season
-        :rtype: float
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            float: The team's NP_OPR (OPR without penalties) in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -223,10 +231,10 @@ class Team:
         """Tiebreaker points are the pre-penalty score of the losing alliance for each match. This function returns the
         total tiebreaker points of a team in one season.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's tiebreaker points in the specified season
-        :rtype: float
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            float: The team's tiebreaker points in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -240,10 +248,10 @@ class Team:
         If you win the match, then the RP awarded to you is the score of your opponent alliance (which lost).
         If you lose the match, then the RP awarded to you is your own alliance's score.
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's ranking points in the specified season
-        :rtype: float
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            float: The team's ranking points in the specified season
         """
         data = self._rankings(season)
         x = []
@@ -258,10 +266,10 @@ class Team:
         four teams receive 1 QP.
 
 
-        :param season: A valid TOA season key.
-        :type season: :class:`~.season.Season`
-        :return: The team's qualifying points in the specified season
-        :rtype: int
+        Args:
+            season (:class:`~alliancepy.season.Season`): An alliancepy Season object
+        Return:
+            int: The team's qualifying points in the specified season
         """
         data = self._rankings(season)
         x = []

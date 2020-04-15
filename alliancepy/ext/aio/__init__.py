@@ -1,11 +1,26 @@
+import logging
+
+try:
+    from logging import NullHandler
+except ImportError:
+
+    class NullHandler(logging.Handler):
+        def emit(self, record) -> None:
+            pass
+
+
+logger = logging.getLogger(__name__)
+logger.addHandler(NullHandler())
+
 try:
     import aiohttp
 except ImportError:
+    logger.error("fatal: Package is not configured for async use!")
     raise ImportError(
         "Package is not configured for async use. Please install with async support enabled."
     )
-
-from .async_client import AsyncClient
+else:
+    from .async_client import AsyncClient
 
 # MIT License
 #
