@@ -25,7 +25,7 @@ import logging
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "1.4.2"
+__version__ = "1.4.3"
 
 try:
     from logging import NullHandler
