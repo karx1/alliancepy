@@ -34,11 +34,9 @@ class AsyncClient:
     This is the asynchronous version on the main client class. It has the same paramters and the team method, but async.
     This means that it must be called with `await`.
 
-    :param api_key: Your TOA API key. This is required, otherwise you will not be able to access the database.
-    :type api_key: str
-    :param application_name: The name of the application that you are using to access the API. \
-    This can just be the name of your script.
-    :type application_name: str
+    Args:
+        api_key (str): Your TOA API key. This is required, otherwise you will not be able to access the database.
+        application_name (str): The name of your application. It can just be the name of your script.
 
     """
 
@@ -57,10 +55,10 @@ class AsyncClient:
         """
         Create an asynchronous :class:`~.async_team.Team` object.
 
-        :param team_number: A valid First Tech Challenge team number.
-        :type team_number: int
-        :return: The Team object
-        :rtype: :class:`~.async.Team`
+        Args:
+            team_number (int): A valid First Tech Challenge team number.
+        Return:
+            :class:`~.async_team.Team`: The Team object.
         """
         logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)

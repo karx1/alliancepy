@@ -15,4 +15,5 @@ Welcome to the alliancepy |ProjectVersion| documentation!
    season_about
    alliancepy/index.rst
    alliancepy/ext/aio/index.rst
+   logging
    changelog

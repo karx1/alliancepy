@@ -80,12 +80,13 @@ class Event:
         """
         Get one of the matches for the event.
 
-        :param match_type: The type of the match. See :ref:`match_type` for more information.
-        :type match_type: :class:`~alliancepy.match_type.MatchType`
-        :param match_number: The number of the match.
-        :type match_number: int
-        :return: A :class:`~.async_match.Match` object containing details about the specific match.
-        :rtype: :class:`.async_match.Match`
+        Args:
+            match_type (:class:`~alliancepy.match_type.MatchType`): The type of the match. See :ref:`match_type` for \
+            more information.
+            match_number (int): The number of the match.
+        Return:
+            :class:`.async_match.Match`: A :class:`~.async_match.Match` object containing details about the \
+            specific match.
         """
         log_str = f"Got request to create asynchronous Match object with type {match_type} and number of {match_number}"
         logger.info(log_str)
@@ -129,10 +130,10 @@ class Event:
         """
         The specified team's rank at the end of the match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The rank as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The rank as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -144,10 +145,10 @@ class Event:
         """
         The amount of times the team's rank changed during the event.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The rank change as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The rank change as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -159,10 +160,10 @@ class Event:
         """
         The amount of times within the event that the specified team won a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of wins as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of wins as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -174,10 +175,10 @@ class Event:
         """
         The amount of times within the event that the specified team lost a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of losses as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of losses as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -189,10 +190,10 @@ class Event:
         """
         The amount of times within the event that the specified team tied in a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of ties as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of ties as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -204,10 +205,10 @@ class Event:
         """
         The specified team's OPR for this event only. Penalties are factored in.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The OPR as a floating point number.
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The OPR as a floating point number.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -219,10 +220,10 @@ class Event:
         """
         The specified team's OPR for this event only. Penaltied are not factored in.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The NP_OPR as a floating point number.
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The NP_OPR as a floating point number.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -234,10 +235,10 @@ class Event:
         """
         The specified team's highest score in a qualifier.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The score as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The score as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -249,10 +250,10 @@ class Event:
         """
         The specified team's ranking points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of ranking points as a floating point number
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The amount of ranking points as a floating point number.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -264,10 +265,10 @@ class Event:
         """
         The specified team's qualifying points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of qualifying points as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of wualifying points as an integer.
         """
         rankings = await self._rankings()
         for rank in rankings:
@@ -279,10 +280,10 @@ class Event:
         """
         The specified team's tiebreaker points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of tiebreaker points as a floating point number
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The amount of tiebreaker points as a floating point number.
         """
         rankings = await self._rankings()
         for rank in rankings:

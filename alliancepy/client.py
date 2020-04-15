@@ -32,12 +32,9 @@ class Client:
     objects but it will
     expand over time.
 
-    :param api_key: Your TOA API key. This is required, otherwise you will not be able to access the database.
-    :type api_key: str
-    :param application_name: The name of the application that you are using to access the API. \
-    This can just be the name of your script.
-    :type application_name: str
-
+    Args:
+        api_key (str): Your TOA API key. This is required, otherwise you will not be able to access the database.
+        application_name (str): The name of your application. It can just be the name of your script.
     """
 
     def __init__(self, api_key: str, application_name: str):
@@ -51,10 +48,10 @@ class Client:
     def team(self, team_number: int):
         """Create a :class:`~.team.Team` object.
 
-        :param team_number: A valid First Tech Challenge team number.
-        :type team_number: int
-        :return: The Team object
-        :rtype: :class:`~.team.Team`
+        Args:
+            team_number (int): A valid First Tech Challenge team number.
+        Return:
+            :class:`~team.Team`: The Team object.
         """
         logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)
