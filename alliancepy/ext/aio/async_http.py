@@ -1,6 +1,7 @@
 import aiohttp
 import json
 import logging
+import asyncio
 
 # MIT License
 #
@@ -28,22 +29,21 @@ logger = logging.getLogger(__name__)
 
 
 async def request(target: str, headers: dict):
-    async with aiohttp.ClientSession(headers=headers) as session:
-        url = f"https://theorangealliance.org/api{target}"
-        logger.info(f"Recieved request to {url}")
-        async with session.get(url) as resp:
-            if resp.status != 200:
-                logger.info(
-                    f"Status code was not 200 ({resp.status}), attempting to gather error message"
-                )
-                try:
-                    data = json.loads(await resp.text())
-                except json.decoder.JSONDecodeError:
-                    raise WebException(await resp.text())
-                else:
-                    raise WebException(data["_message"])
+    session = aiohttp.ClientSession(headers=headers)
+    url = f"https://theorangealliance.org/api{target}"
+    task = asyncio.create_task(session.get(url, headers=headers))
+    resp = await task
+    if resp.status != 200:
+        logger.info(f"Status code was not 200 ({resp.status}), attempting to gather error message")
+        try:
             data = json.loads(await resp.text())
+        except json.decoder.JSONDecodeError:
+            raise WebException(await resp.text())
+        else:
+            raise WebException(data["_message"])
+    data = json.loads(await resp.text())
     logger.info(f"Request succsessful, returning response to origin")
+    await session.close()
 
     return data
 
