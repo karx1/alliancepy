@@ -3,6 +3,18 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p4p2:
+
+v1.4.2
+------
+- Correctly handle matches with six teams (like elimination matches)
+
+.. _vp1p4p1:
+
+v1.4.1
+-------
+- Diligent bug squashing
+
 .. _vp1p4:
 
 v1.4

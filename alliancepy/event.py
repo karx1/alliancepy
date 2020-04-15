@@ -3,6 +3,7 @@ from alliancepy.season import Season
 from alliancepy.match import Match
 from alliancepy.match_type import MatchType
 import re
+import logging
 
 # MIT License
 #
@@ -25,6 +26,8 @@ import re
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+logger = logging.getLogger(__name__)
 
 
 class Event:
@@ -59,6 +62,7 @@ class Event:
         location = f"{info['city']} {info['state_prov']}, {info['country']}"
         self.location = location
         self.venue = info["venue"]
+        logger.info(f"Initialized 'Event' object with event key of {self._event_key}")
 
     def __str__(self):
         return f"<Event: {self.name}>"
@@ -70,13 +74,17 @@ class Event:
         """
         Get one of the matches for the event.
 
-        :param match_type: The type of the match. See :ref:`match_type` for more information.
-        :type match_type: :class:`~alliancepy.match_type.MatchType`
-        :param match_number: The number of the match.
-        :type match_number: int
-        :return: A :class:`~alliancepy.match.Match` object containing details about the specific match.
-        :rtype: :class:`alliancepy.match.Match`
+        Args:
+            match_type (:class:`~alliancepy.match_type.MatchType`): The type of the match. See :ref:`match_type` for \
+            more information.
+            match_number (int): The number of the match.
+        Return:
+            :class:`alliancepy.match.Match`: A :class:`~alliancepy.match.Match` object containing details about the \
+            specific match.
         """
+        logger.info(
+            f"Got request to create Match object with type {match_type} and number of {match_number}"
+        )
         if len(str(match_number)) == 1:
             match_name = f"{match_type.value}00{match_number}"
         elif len(str(match_number)) == 2:
@@ -87,17 +95,24 @@ class Event:
         mdict = {}
         for match in matches:
             key = match["match_key"]
+            logger.info(f"Processing match key {key}")
             key_right_strip = re.sub(r"\d{4}-\w+-\w+-", "", key)
             value = re.sub(r"-\d+", "", key_right_strip)
             mdict[key] = value
         try:
-            match_key = list(mdict.keys())[list(mdict.values()).index(match_name.upper())]
+            logger.info("Performing reverse lookup of match key")
+            match_key = list(mdict.keys())[
+                list(mdict.values()).index(match_name.upper())
+            ]
         except ValueError:
+            logger.error(f"This match does not exist!")
             raise ValueError("This match does not exist")
         else:
+            logger.info(f"Sucessfully fetched match key, returning Match object")
             return Match(match_key, headers=self._headers)
 
     def _rankings(self):
+        logger.info("Getting rankings data...")
         resp = request(f"/event/{self._event_key}/rankings", headers=self._headers)
         return resp
 
@@ -105,10 +120,10 @@ class Event:
         """
         The specified team's rank at the end of the match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The rank as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The rank as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -120,10 +135,10 @@ class Event:
         """
         The amount of times the team's rank changed during the event.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The rank change as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The rank change as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -135,10 +150,10 @@ class Event:
         """
         The amount of times within the event that the specified team won a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of wins as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of wins as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -150,10 +165,10 @@ class Event:
         """
         The amount of times within the event that the specified team lost a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of losses as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of losses as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -165,10 +180,10 @@ class Event:
         """
         The amount of times within the event that the specified team tied in a match.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of ties as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of ties as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -180,10 +195,10 @@ class Event:
         """
         The specified team's OPR for this event only. Penalties are factored in.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The OPR as a floating point number.
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The OPR as a floating point number.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -195,10 +210,10 @@ class Event:
         """
         The specified team's OPR for this event only. Penaltied are not factored in.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The NP_OPR as a floating point number.
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The NP_OPR as a floating point number.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -210,10 +225,10 @@ class Event:
         """
         The specified team's highest score in a qualifier.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The score as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The score as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -225,10 +240,10 @@ class Event:
         """
         The specified team's ranking points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of ranking points as a floating point number
-        :rtype: float
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The amount of ranking points as a floating point number.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -240,10 +255,10 @@ class Event:
         """
         The specified team's qualifying points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of qualifying points as an integer
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            int: The amount of wualifying points as an integer.
         """
         rankings = self._rankings()
         for rank in rankings:
@@ -255,10 +270,10 @@ class Event:
         """
         The specified team's tiebreaker points for this event only.
 
-        :param team_number: A valid FTC team number.
-        :type team_number: int
-        :return: The amount of tiebreaker points as a floating point number
-        :rtype: int
+        Args:
+            team_number (int): A valid FTC team number.
+        Return:
+            float: The amount of tiebreaker points as a floating point number.
         """
         rankings = self._rankings()
         for rank in rankings:
