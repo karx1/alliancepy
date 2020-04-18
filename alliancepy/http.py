@@ -40,6 +40,7 @@ def request(target: str, headers: dict):
                     seconds = int(rhead["retry-after"])
                     logger.info(f"Status code was 429, sleeping for {seconds} seconds")
                     time.sleep(seconds)
+                    logger.info("Done sleeping, attempting request again")
                     return request(target, headers)
                 logger.info(
                     f"Status code was not 200 ({resp.status_code}), attempting to gather error message"
