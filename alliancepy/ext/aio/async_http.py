@@ -38,6 +38,7 @@ async def request(target: str, headers: dict):
             rhead = {key.lower(): value for key, value in resp.headers.items()}
             seconds = int(rhead["retry-after"])
             logger.info(f"Status code was 429, sleeping for {seconds} seconds")
+            await session.close()
             await asyncio.sleep(seconds)
             logger.info("Done sleeping, attempting request again")
             return await request(target, headers)
