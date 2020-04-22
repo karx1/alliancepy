@@ -3,6 +3,12 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p4p5:
+
+v1.4.5
+------
+- Close session before attempting request again
+
 .. _vp1p4p4:
 
 v1.4.4
