@@ -90,13 +90,9 @@ class Event:
         """
         log_str = f"Got request to create asynchronous Match object with type {match_type} and number of {match_number}"
         logger.info(log_str)
-        if len(str(match_number)) == 1:
-            match_name = f"{match_type.value}00{match_number}"
-        elif len(str(match_number)) == 2:
-            match_name = f"{match_type.value}0{match_number}"
-        else:
-            match_name = f"{match_type.value}{match_number}"
-        loop = asyncio.get_event_loop()
+        middle = "0" * int(3 - len(str(match_number)))
+        match_name = f"{match_type.value}{middle}{match_number}"
+        loop = asyncio.get_event_loop_policy().get_event_loop()
         matches = loop.run_until_complete(
             request(f"/event/{self._event_key}/matches", headers=self._headers)
         )

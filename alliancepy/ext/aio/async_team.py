@@ -62,7 +62,7 @@ class Team:
         self._headers = headers
         self._loop = asyncio.get_event_loop()
         team = self._loop.run_until_complete(
-            request(target=f"/team/{team_number}", headers=headers)
+            request(target=f"/team/{team_number}", headers=headers, loop=self._loop)
         )
         team = team[0]
         self.region = team["region_key"]
@@ -123,37 +123,16 @@ class Team:
         self._losses = data[0]["losses"]
         self._ties = data[0]["ties"]
 
-    @property
-    def wins(self):
-        """
-        The total amount of times the team has won a match.
-
-        :return: The number of wins.
-        :rtype: int
-        """
-        self._loop.run_until_complete(self._wlt())
+    async def wins(self):
+        await self._wlt()
         return self._wins
 
-    @property
-    def losses(self):
-        """
-        The total amount of times the team has lost a match.
-
-        :return: The number of wins.
-        :rtype: int
-        """
-        self._loop.run_until_complete(self._wlt())
+    async def losses(self):
+        await self._wlt()
         return self._losses
 
-    @property
-    def ties(self):
-        """
-        The total amount of times the team has tied in a match.
-
-        :return: The number of wins.
-        :rtype: int
-        """
-        self._loop.run_until_complete(self._wlt())
+    async def ties(self):
+        await self._wlt()
         return self._ties
 
     async def _rankings(self, season: Season):
