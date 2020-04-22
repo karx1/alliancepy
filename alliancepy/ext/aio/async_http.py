@@ -31,9 +31,17 @@ logger = logging.getLogger(__name__)
 async def request(target: str, headers: dict):
     session = aiohttp.ClientSession(headers=headers)
     url = f"https://theorangealliance.org/api{target}"
-    task = asyncio.create_task(session.get(url, headers=headers))
+    task = asyncio.ensure_future(session.get(url, headers=headers))
     resp = await task
     if resp.status != 200:
+        if resp.status == 429:
+            rhead = {key.lower(): value for key, value in resp.headers.items()}
+            seconds = int(rhead["retry-after"])
+            logger.info(f"Status code was 429, sleeping for {seconds} seconds")
+            await session.close()
+            await asyncio.sleep(seconds)
+            logger.info("Done sleeping, attempting request again")
+            return await request(target, headers)
         logger.info(f"Status code was not 200 ({resp.status}), attempting to gather error message")
         try:
             data = json.loads(await resp.text())

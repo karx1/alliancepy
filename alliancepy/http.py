@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import time
 
 # MIT License
 #
@@ -34,6 +35,13 @@ def request(target: str, headers: dict):
         logger.info(f"Recieved request to {url}")
         with session.get(url) as resp:
             if resp.status_code != 200:
+                if resp.status_code == 429:
+                    rhead = {key.lower(): value for key, value in resp.headers.items()}
+                    seconds = int(rhead["retry-after"])
+                    logger.info(f"Status code was 429, sleeping for {seconds} seconds")
+                    time.sleep(seconds)
+                    logger.info("Done sleeping, attempting request again")
+                    return request(target, headers)
                 logger.info(
                     f"Status code was not 200 ({resp.status_code}), attempting to gather error message"
                 )

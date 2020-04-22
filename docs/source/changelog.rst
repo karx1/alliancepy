@@ -3,6 +3,22 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p4p4:
+
+v1.4.4
+-------
+- Gracefully handle 429 errors
+- Use ensure_future rather than manually grabbing event loop
+
+.. _vp1p4p3:
+
+v1.4.3
+------
+- Set up logging
+- Make creating documentation more efficient
+- Fix bug where web requests raise a RuntimeError
+
+
 .. _vp1p4p2:
 
 v1.4.2
