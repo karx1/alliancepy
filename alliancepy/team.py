@@ -3,6 +3,8 @@ from alliancepy.http import request
 from alliancepy.season import Season
 from alliancepy.event import Event
 import logging
+import threading
+import queue
 
 # MIT License
 #
@@ -84,22 +86,37 @@ class Team:
             dict: A dict containing the :class:`~alliancepy.event.Event` objects. The key names correspont to the name \
             of the event.
         """
+        q = queue.Queue()
+        headers = self._headers
+
+        def worker():
+            while True:
+                event_key = q.get()
+                e = Event(event_key=event_key, headers=headers)
+                raw_key = str(e.name)
+                key = raw_key.replace(" ", "_")
+                key = key.lower()
+                if key in edict:
+                    raw_key_right = re.sub(r"\d{4}-\w+-", "", event_key)
+                    raw_key_right = raw_key_right.lower()
+                    key = f"{key}_{raw_key_right}"
+                edict[key] = e
+                q.task_done()
+
+        threading.Thread(target=worker, daemon=True).start()
+        logger.info("Started worker")
+
         edict = {}
         events = request(
             f"/team/{self._team_number}/events/{season}", headers=self._headers
         )
+        logger.info("Sending task requests to worker")
         for event in events:
-            event_key = event["event_key"]
-            e = Event(event_key=event_key, headers=self._headers)
-            raw_key = str(e.name)
-            key = raw_key.replace(" ", "_")
-            key = key.lower()
-            if key in edict:
-                raw_key_right = re.sub(r"\d{4}-\w+-", "", event_key)
-                raw_key_right = raw_key_right.lower()
-                key = f"{key}_{raw_key_right}"
-            edict[key] = e
+            q.put(event["event_key"])
 
+        logger.info("Processing units in queue")
+        q.join()
+        logger.info("Done processing, finishing up")
         return edict
 
     def _wlt(self):

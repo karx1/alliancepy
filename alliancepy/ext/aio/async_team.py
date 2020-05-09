@@ -94,26 +94,45 @@ class Team:
         events = await request(
             f"/team/{self._team_number}/events/{season}", headers=self._headers
         )
+        q = asyncio.Queue()
+        headers = self._headers
 
-        def _parse_events(ev=events, ed=None):
-            ed = ed or edict
-            for event in ev:
-                e = Event(event_key=event["event_key"], headers=self._headers)
-                event_key = event["event_key"]
+        async def worker():
+            while True:
+                event_key = await q.get()
+                e = Event(event_key=event_key, headers=headers)
                 raw_key = str(e.name)
                 key = raw_key.replace(" ", "_")
                 key = key.lower()
-                if key in ed:
+                if key in edict:
                     raw_key_right = re.sub(r"\d{4}-\w+-", "", event_key)
                     raw_key_right = raw_key_right.lower()
                     key = f"{key}_{raw_key_right}"
-                ed[key] = e
+                edict[key] = e
+                q.task_done()
 
-            return ed
+        logger.info("Sending tasks to queue")
+        for event in events:
+            await q.put(event["event_key"])
 
-        loop = get_loop()
-        future = loop.run_in_executor(ThreadPoolExecutor(), _parse_events)
-        return await future
+        tasks = []
+        logger.info("Creating three workers to process the queue concurrently")
+        for _ in range(3):
+            task = get_loop().create_task(worker())
+            tasks.append(task)
+
+        logger.info("Processing units in queue")
+        await q.join()
+        logger.info("Done proccessing, killing workers")
+
+        for task in tasks:
+            task.cancel()
+
+        logger.info("Waiting for workers to be killed")
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+        logger.info("All workers killed, finishing up")
+        return edict
 
     async def _wlt(self):
         logger.info("Fetching WLT data")

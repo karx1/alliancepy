@@ -64,8 +64,6 @@ class AsyncClient:
         logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)
 
-    @property
-    def api_version(self):
-        loop = get_loop()
-        data = loop.run_until_complete(request('/', headers=self._headers))
+    async def api_version(self):
+        data = await request("/", headers=self._headers)
         return data["version"]
