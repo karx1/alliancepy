@@ -61,18 +61,15 @@ class Match:
     def __repr__(self):
         return str(self)
 
-    @property
-    def participants(self):
+    async def participants(self):
         """
         The participants of the match.
 
-        :return: The team numbers in a list
-        :rtype: List[int]
+        Return:
+            List[int]: The team numbers in a list
         """
-        loop = asyncio.get_event_loop()
-        participants = loop.run_until_complete(
-            request(f"/match/{self._match_key}/participants", headers=self._headers)
-        )
+        loop = asyncio.new_event_loop()
+        participants = await request(f"/match/{self._match_key}/participants", headers=self._headers)
         x = []
         for part in participants:
             raw = part["team_key"]
@@ -107,8 +104,7 @@ class Alliance:
     def __repr__(self):
         return str(self)
 
-    @property
-    def min_penalty(self):
+    async def min_penalty(self):
         """
         The amount of minor penalties an alliance earned.
 
@@ -117,8 +113,7 @@ class Alliance:
         key = f"{self._alliance}_min_pen"
         return int(self._details[key])
 
-    @property
-    def maj_penalty(self):
+    async def maj_penalty(self):
         """
         The amount of major penalites an alliance earned.
 
@@ -127,8 +122,7 @@ class Alliance:
         key = f"{self._alliance}_maj_pen"
         return int(self._details[key])
 
-    @property
-    def auto_stones(self):
+    async def auto_stones(self):
         """A list of the stones the alliance stacked in autonomous.
 
         :rtype: List[str]
@@ -137,19 +131,16 @@ class Alliance:
         for item in self._details[self._alliance]:
             if "auto_stone_" in item:
                 x.append(self._details[self._alliance][item])
-        return x
 
-    @property
-    def foundation(self):
+    async def foundation(self):
         """
-        Whether the alliance repositioned the foundation suring autonomous or not.
+        Whether the alliance repositioned the foundation during autonomous or not.
 
         :rtype: bool
         """
         return self._details[self._alliance]["foundation_repositioned"]
 
-    @property
-    def teleop(self):
+    async def teleop(self):
         """
         Returns a dict containing integer values.
         Contains "delivered", "placed", and "returned".
@@ -185,8 +176,7 @@ class Robot:
         log_str = f"Initialized asynchronous Robot object with alliance {alliance} and robot number of {robot_number}"
         logger.info(log_str)
 
-    @property
-    def parked_skybridge(self):
+    async def parked_skybridge(self):
         """Whether the robot parked under the skybridge or not
 
         :rtype: bool
@@ -195,8 +185,7 @@ class Robot:
         value = self._details[self._alliance][key]["nav"]
         return bool(value)
 
-    @property
-    def parked_endgame(self):
+    async def parked_endgame(self):
         """
         Whether the robot parked at the end of the match or not.
 
@@ -206,31 +195,24 @@ class Robot:
         value = self._details[self._alliance][key]["parked"]
         return bool(value)
 
-    @property
-    def capstone_level(self):
+    async def capstone_level(self):
         """
         The level of the capstone at the end of the match.
 
         :rtype: int
         """
         key = f"robot_{self._robot_number}"
-        value = self._details[self._alliance][key]["parked"]
+        value = self._details[self._alliance][key]["capstone_level"]
         return int(value)
 
-    @property
-    def owner(self):
+    async def owner(self):
         """The team that owns the bot.
 
-        :return: The team's team number as an integer
-        :rtype: int
+        Return:
+            int: The team's team number as in integer
         """
-        loop = asyncio.get_event_loop()
-        match = loop.run_until_complete(
-            request(f"/match/{self._match_key}", headers=self._headers)
-        )
-        participants = list(
-            filter(lambda p: p["station_status"] == 1, match[0]["participants"])
-        )
+        match = await request(f"/match/{self._match_key}", headers=self._headers)
+        participants = list(filter(lambda p: p["station_status"] == 1, match[0]["participants"]))
         if self._alliance == "red" and self._robot_number == 1:
             raw = participants[0]["team_key"]
         elif self._alliance == "red" and self._robot_number == 2:

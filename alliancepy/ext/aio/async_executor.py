@@ -37,3 +37,13 @@ class ThreadEventLoopPolicy(_BasePolicy):
             loop = self.new_event_loop()
             self.set_event_loop(loop)
             return loop
+
+
+def get_loop():
+    try:
+        try:
+            return asyncio.get_running_loop()
+        except AttributeError:
+            return asyncio._get_running_loop()
+    except RuntimeError:
+        return asyncio.get_event_loop()
