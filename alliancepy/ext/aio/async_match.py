@@ -69,7 +69,7 @@ class Match:
             List[int]: The team numbers in a list
         """
         loop = asyncio.new_event_loop()
-        participants = await request(f"/match/{self._match_key}/participants", headers=self._headers, loop=loop)
+        participants = await request(f"/match/{self._match_key}/participants", headers=self._headers)
         x = []
         for part in participants:
             raw = part["team_key"]

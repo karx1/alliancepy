@@ -1,5 +1,6 @@
 from .async_http import request
 from .async_event import Event
+from .async_executor import get_loop
 from alliancepy.season import Season
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -60,9 +61,9 @@ class Team:
     def __init__(self, team_number, headers: dict):
         self._team_number = team_number
         self._headers = headers
-        self._loop = asyncio.get_event_loop()
+        self._loop = get_loop()
         team = self._loop.run_until_complete(
-            request(target=f"/team/{team_number}", headers=headers, loop=self._loop)
+            request(target=f"/team/{team_number}", headers=headers)
         )
         team = team[0]
         self.region = team["region_key"]
@@ -110,9 +111,9 @@ class Team:
 
             return ed
 
-        loop = asyncio.get_event_loop_policy().new_event_loop()
+        loop = get_loop()
         future = loop.run_in_executor(ThreadPoolExecutor(), _parse_events)
-        return loop.run_until_complete(future)
+        return await future
 
     async def _wlt(self):
         logger.info("Fetching WLT data")

@@ -1,4 +1,5 @@
 from alliancepy.team import Team
+from alliancepy.http import request
 import logging
 
 # MIT License
@@ -55,3 +56,8 @@ class Client:
         """
         logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)
+
+    @property
+    def api_version(self):
+        data = request('/', headers=self._headers)
+        return data["version"]
