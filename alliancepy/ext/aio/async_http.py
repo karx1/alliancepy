@@ -1,3 +1,4 @@
+from .async_executor import get_loop
 import aiohttp
 import json
 import logging
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 async def request(target: str, headers: dict):
     session = aiohttp.ClientSession(headers=headers)
     url = f"https://theorangealliance.org/api{target}"
-    task = asyncio.ensure_future(session.get(url, headers=headers))
+    task = get_loop().create_task(session.get(url))
     resp = await task
     if resp.status != 200:
         if resp.status == 429:

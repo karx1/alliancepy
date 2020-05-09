@@ -1,5 +1,6 @@
 from .async_http import request
 from .async_match import Match
+from .async_executor import get_loop
 from alliancepy.season import Season
 from alliancepy.match_type import MatchType
 import asyncio
@@ -53,7 +54,7 @@ class Event:
     def __init__(self, event_key: str, headers: dict):
         self._event_key = event_key
         self._headers = headers
-        self._loop = asyncio.get_event_loop()
+        self._loop = get_loop()
         info = self._loop.run_until_complete(
             request(f"/event/{self._event_key}", headers=self._headers)
         )
@@ -90,16 +91,9 @@ class Event:
         """
         log_str = f"Got request to create asynchronous Match object with type {match_type} and number of {match_number}"
         logger.info(log_str)
-        if len(str(match_number)) == 1:
-            match_name = f"{match_type.value}00{match_number}"
-        elif len(str(match_number)) == 2:
-            match_name = f"{match_type.value}0{match_number}"
-        else:
-            match_name = f"{match_type.value}{match_number}"
-        loop = asyncio.get_event_loop()
-        matches = loop.run_until_complete(
-            request(f"/event/{self._event_key}/matches", headers=self._headers)
-        )
+        middle = "0" * int(3 - len(str(match_number)))
+        match_name = f"{match_type.value}{middle}{match_number}"
+        matches = await request(f"/event/{self._event_key}/matches", headers=self._headers)
         mdict = {}
         for match in matches:
             key = match["match_key"]

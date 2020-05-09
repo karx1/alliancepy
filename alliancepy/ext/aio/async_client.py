@@ -1,5 +1,6 @@
 from .async_team import Team
-from .async_executor import ThreadEventLoopPolicy
+from .async_executor import ThreadEventLoopPolicy, get_loop
+from .async_http import request
 import asyncio
 import nest_asyncio
 import logging
@@ -62,3 +63,7 @@ class AsyncClient:
         """
         logger.info(f"Got request for team with team number of {team_number}")
         return Team(team_number=team_number, headers=self._headers)
+
+    async def api_version(self):
+        data = await request("/", headers=self._headers)
+        return data["version"]

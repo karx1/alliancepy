@@ -3,6 +3,14 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
+.. _vp1p5:
+
+v1.5
+-----
+- Overhaul Event processor
+- Clean up asyncio logic
+- Turn properties into coroutines
+
 .. _vp1p4p5:
 
 v1.4.5

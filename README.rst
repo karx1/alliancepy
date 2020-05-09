@@ -30,7 +30,7 @@ Here's a simple example:
   from alliancepy import Season
   
   client = alliancepy.Client(api_key="api_key_goes_here", application_name="application_name_goes_here")
-  team = client.team(7172)
+  team = client.team(16405)
   print(team.opr(Season.SKYSTONE))
 
 Supports
