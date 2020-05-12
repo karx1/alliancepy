@@ -59,5 +59,9 @@ class Client:
 
     @property
     def api_version(self):
+        """The version of the API that is currently in use.
+
+        :rtype: int
+        """
         data = request('/', headers=self._headers)
         return data["version"]

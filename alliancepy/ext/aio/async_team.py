@@ -144,14 +144,32 @@ class Team:
         self._ties = data[0]["ties"]
 
     async def wins(self):
+        """
+        The total amount of times the team has won a match.
+
+        :return: The number of wins.
+        :rtype: int
+        """
         await self._wlt()
         return self._wins
 
     async def losses(self):
+        """
+        The total amount of times the team has lost a match.
+
+        :return: The number of losses.
+        :rtype: int
+        """
         await self._wlt()
         return self._losses
 
     async def ties(self):
+        """
+        The total amount of times the team has tied in a match a match.
+
+        :return: The number of ties.
+        :rtype: int
+        """
         await self._wlt()
         return self._ties
 

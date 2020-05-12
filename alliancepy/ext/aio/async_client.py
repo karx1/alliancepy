@@ -65,5 +65,9 @@ class AsyncClient:
         return Team(team_number=team_number, headers=self._headers)
 
     async def api_version(self):
+        """The version of the API that is currently in use.
+
+        :rtype: int
+        """
         data = await request("/", headers=self._headers)
         return data["version"]
