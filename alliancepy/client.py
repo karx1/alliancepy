@@ -63,5 +63,5 @@ class Client:
 
         :rtype: int
         """
-        data = request('/', headers=self._headers)
+        data = request("/", headers=self._headers)
         return data["version"]

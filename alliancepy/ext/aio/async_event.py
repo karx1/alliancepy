@@ -93,7 +93,9 @@ class Event:
         logger.info(log_str)
         middle = "0" * int(3 - len(str(match_number)))
         match_name = f"{match_type.value}{middle}{match_number}"
-        matches = await request(f"/event/{self._event_key}/matches", headers=self._headers)
+        matches = await request(
+            f"/event/{self._event_key}/matches", headers=self._headers
+        )
         mdict = {}
         for match in matches:
             key = match["match_key"]

@@ -36,7 +36,7 @@ extras_require = {
     "async": ["aiohttp[speedups]", "nest_asyncio"],
 }
 
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(

@@ -43,7 +43,9 @@ async def request(target: str, headers: dict):
             await asyncio.sleep(seconds)
             logger.info("Done sleeping, attempting request again")
             return await request(target, headers)
-        logger.info(f"Status code was not 200 ({resp.status}), attempting to gather error message")
+        logger.info(
+            f"Status code was not 200 ({resp.status}), attempting to gather error message"
+        )
         try:
             data = json.loads(await resp.text())
         except json.decoder.JSONDecodeError:
