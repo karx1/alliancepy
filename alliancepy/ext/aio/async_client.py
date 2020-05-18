@@ -4,6 +4,7 @@ from .async_http import request
 import asyncio
 import nest_asyncio
 import logging
+import sys
 
 # MIT License
 #
@@ -37,18 +38,20 @@ class AsyncClient:
 
     Args:
         api_key (str): Your TOA API key. This is required, otherwise you will not be able to access the database.
-        application_name (str): The name of your application. It can just be the name of your script.
+        application_name (str): The name of your application. It can just be the name of your script. Defaults to \
+        ``sys.argv[0]``
 
     """
 
-    def __init__(self, api_key: str, application_name: str):
+    def __init__(self, api_key: str, application_name: str = None):
+        application_name = application_name or sys.argv[0]
         self._headers = {
             "content-type": "application/json",
             "x-toa-key": api_key,
             "x-application-origin": application_name,
         }
         asyncio.set_event_loop_policy(ThreadEventLoopPolicy())
-        loop = asyncio.get_event_loop_policy().get_event_loop()
+        loop = get_loop()
         nest_asyncio.apply(loop)
         logger.info("Initialized Client object")
 
