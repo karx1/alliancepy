@@ -69,7 +69,9 @@ class Match:
             List[int]: The team numbers in a list
         """
         loop = asyncio.new_event_loop()
-        participants = await request(f"/match/{self._match_key}/participants", headers=self._headers)
+        participants = await request(
+            f"/match/{self._match_key}/participants", headers=self._headers
+        )
         x = []
         for part in participants:
             raw = part["team_key"]
@@ -212,7 +214,9 @@ class Robot:
             int: The team's team number as in integer
         """
         match = await request(f"/match/{self._match_key}", headers=self._headers)
-        participants = list(filter(lambda p: p["station_status"] == 1, match[0]["participants"]))
+        participants = list(
+            filter(lambda p: p["station_status"] == 1, match[0]["participants"])
+        )
         if self._alliance == "red" and self._robot_number == 1:
             raw = participants[0]["team_key"]
         elif self._alliance == "red" and self._robot_number == 2:

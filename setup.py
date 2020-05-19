@@ -36,6 +36,9 @@ extras_require = {
     "async": ["aiohttp[speedups]", "nest_asyncio"],
 }
 
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
+
 setup(
     name="alliancepy",
     version=version,
@@ -46,6 +49,7 @@ setup(
     author_email="nerdstep710@gmail.com",
     description="A library to access The Orange Alliance API",
     long_description=readme,
+    install_requires=requirements,
     python_requires=">=3.6",
     extras_require=extras_require,
     test_suite="nose.collector",

@@ -1,3 +1,6 @@
+import sys
+
+from alliancepy.cache import Cache
 from alliancepy.team import Team
 from alliancepy.http import request
 import logging
@@ -35,10 +38,13 @@ class Client:
 
     Args:
         api_key (str): Your TOA API key. This is required, otherwise you will not be able to access the database.
-        application_name (str): The name of your application. It can just be the name of your script.
+        application_name (str): The name of your application. It can just be the name of your script. Defaults to \
+        ``sys.argv[0]``
     """
 
-    def __init__(self, api_key: str, application_name: str):
+    def __init__(self, api_key: str, application_name: str = None):
+        application_name = application_name or sys.argv[0]
+        cache = Cache()
         self._headers = {
             "content-type": "application/json",
             "x-toa-key": api_key,
@@ -59,5 +65,12 @@ class Client:
 
     @property
     def api_version(self):
-        data = request('/', headers=self._headers)
+        """The version of the API that is currently in use.
+
+        :rtype: int
+        """
+        data = request("/", headers=self._headers)
         return data["version"]
+
+    def clear_cache(self):
+        request("clear", headers=self._headers)

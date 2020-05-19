@@ -1,4 +1,5 @@
 from .async_executor import get_loop
+from alliancepy.cache import Cache
 import aiohttp
 import json
 import logging
@@ -27,9 +28,15 @@ import asyncio
 # SOFTWARE.
 
 logger = logging.getLogger(__name__)
+cache = Cache()
 
 
 async def request(target: str, headers: dict):
+    if target == "cache":
+        cache.clear()
+        return
+    if target in cache.keys():
+        return cache.get(target)
     session = aiohttp.ClientSession(headers=headers)
     url = f"https://theorangealliance.org/api{target}"
     task = get_loop().create_task(session.get(url))
@@ -43,7 +50,9 @@ async def request(target: str, headers: dict):
             await asyncio.sleep(seconds)
             logger.info("Done sleeping, attempting request again")
             return await request(target, headers)
-        logger.info(f"Status code was not 200 ({resp.status}), attempting to gather error message")
+        logger.info(
+            f"Status code was not 200 ({resp.status}), attempting to gather error message"
+        )
         try:
             data = json.loads(await resp.text())
         except json.decoder.JSONDecodeError:
@@ -54,6 +63,7 @@ async def request(target: str, headers: dict):
     logger.info(f"Request succsessful, returning response to origin")
     await session.close()
 
+    cache.add(target, data)
     return data
 
 
