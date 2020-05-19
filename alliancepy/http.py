@@ -1,4 +1,5 @@
 import requests
+from alliancepy.cache import Cache
 import json
 import logging
 import time
@@ -26,9 +27,15 @@ import time
 # SOFTWARE.
 
 logger = logging.getLogger(__name__)
+cache = Cache()
 
 
 def request(target: str, headers: dict):
+    if target == "clear":
+        cache.clear()
+        return
+    if target in cache.keys():
+        return cache.get(target)
     with requests.Session() as session:
         session.headers.update(headers)
         url = f"https://theorangealliance.org/api{target}"
@@ -54,6 +61,7 @@ def request(target: str, headers: dict):
             data = json.loads(resp.text)
     logger.info(f"Request succsessful, returning response to origin")
 
+    cache.add(target, data)
     return data
 
 

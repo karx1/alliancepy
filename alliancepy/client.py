@@ -1,5 +1,6 @@
 import sys
 
+from alliancepy.cache import Cache
 from alliancepy.team import Team
 from alliancepy.http import request
 import logging
@@ -43,6 +44,7 @@ class Client:
 
     def __init__(self, api_key: str, application_name: str = None):
         application_name = application_name or sys.argv[0]
+        cache = Cache()
         self._headers = {
             "content-type": "application/json",
             "x-toa-key": api_key,
@@ -69,3 +71,7 @@ class Client:
         """
         data = request("/", headers=self._headers)
         return data["version"]
+
+    def clear_cache(self):
+        """Clears the cache. This is useful for long-running applications when the cache gets too big."""
+        request("clear", headers=self._headers)

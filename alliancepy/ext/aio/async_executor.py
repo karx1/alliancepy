@@ -41,9 +41,9 @@ class ThreadEventLoopPolicy(_BasePolicy):
 
 def get_loop():
     try:
-        try:
+        if sys.version_info >= (3, 7, 0):
             return asyncio.get_running_loop()
-        except AttributeError:
+        else:
             return asyncio._get_running_loop()
     except RuntimeError:
-        return asyncio.get_event_loop()
+        return asyncio.get_event_loop_policy().get_event_loop()
