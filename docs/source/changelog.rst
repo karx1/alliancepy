@@ -5,6 +5,13 @@ This is a detailed description of what changed in each version.
 
 .. _vp1p5:
 
+v1.5.1
+------
+- Implement cache.
+- Bug fixes
+
+.. _vp1p5:
+
 v1.5
 -----
 - Overhaul Event processor
