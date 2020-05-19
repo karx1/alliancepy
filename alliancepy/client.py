@@ -73,4 +73,5 @@ class Client:
         return data["version"]
 
     def clear_cache(self):
+        """Clears the cache. This is useful for long-running applications when the cache gets too big."""
         request("clear", headers=self._headers)
