@@ -27,42 +27,38 @@ import time
 # SOFTWARE.
 
 logger = logging.getLogger(__name__)
-cache = Cache()
 
 
 def request(target: str, headers: dict):
-    if target == "clear":
-        cache.clear()
-        return
-    if target in cache.keys():
-        return cache.get(target)
-    with requests.Session() as session:
-        session.headers.update(headers)
-        url = f"https://theorangealliance.org/api{target}"
-        logger.info(f"Recieved request to {url}")
-        with session.get(url) as resp:
-            if resp.status_code != 200:
-                if resp.status_code == 429:
-                    rhead = {key.lower(): value for key, value in resp.headers.items()}
-                    seconds = int(rhead["retry-after"])
-                    logger.info(f"Status code was 429, sleeping for {seconds} seconds")
-                    time.sleep(seconds)
-                    logger.info("Done sleeping, attempting request again")
-                    return request(target, headers)
-                logger.info(
-                    f"Status code was not 200 ({resp.status_code}), attempting to gather error message"
-                )
-                try:
-                    data = json.loads(resp.text)
-                except json.decoder.JSONDecodeError:
-                    raise WebException(resp.text)
-                else:
-                    raise WebException(data["_message"])
-            data = json.loads(resp.text)
-    logger.info(f"Request succsessful, returning response to origin")
-
-    cache.add(target, data)
-    return data
+    with Cache() as cache:
+        if target in cache.keys():
+            return cache.get(target)
+        with requests.Session() as session:
+            session.headers.update(headers)
+            url = f"https://theorangealliance.org/api{target}"
+            logger.info(f"Recieved request to {url}")
+            with session.get(url) as resp:
+                if resp.status_code != 200:
+                    if resp.status_code == 429:
+                        rhead = {key.lower(): value for key, value in resp.headers.items()}
+                        seconds = int(rhead["retry-after"])
+                        logger.info(f"Status code was 429, sleeping for {seconds} seconds")
+                        time.sleep(seconds)
+                        logger.info("Done sleeping, attempting request again")
+                        return request(target, headers)
+                    logger.info(
+                        f"Status code was not 200 ({resp.status_code}), attempting to gather error message"
+                    )
+                    try:
+                        data = json.loads(resp.text)
+                    except json.decoder.JSONDecodeError:
+                        raise WebException(resp.text)
+                    else:
+                        raise WebException(data["_message"])
+                data = json.loads(resp.text)
+        logger.info(f"Request succsessful, returning response to origin")
+        cache.add(target, data)
+        return data
 
 
 class WebException(Exception):
