@@ -40,9 +40,13 @@ def request(target: str, headers: dict):
             with session.get(url) as resp:
                 if resp.status_code != 200:
                     if resp.status_code == 429:
-                        rhead = {key.lower(): value for key, value in resp.headers.items()}
+                        rhead = {
+                            key.lower(): value for key, value in resp.headers.items()
+                        }
                         seconds = int(rhead["retry-after"])
-                        logger.info(f"Status code was 429, sleeping for {seconds} seconds")
+                        logger.info(
+                            f"Status code was 429, sleeping for {seconds} seconds"
+                        )
                         time.sleep(seconds)
                         logger.info("Done sleeping, attempting request again")
                         return request(target, headers)
