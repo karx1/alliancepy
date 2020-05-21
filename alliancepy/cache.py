@@ -1,9 +1,28 @@
-cache = {}
+import pickle
 
 
 class Cache:
     def __init__(self):
-        self._cache = cache
+        self._filename = "alliancepy.txt"
+        self._cache = {}
+
+    def __enter__(self):
+        try:
+            with open(self._filename, "rb") as file:
+                d = pickle.load(file)
+                for key, value in d.items():
+                    self._cache[key] = value
+        except (FileNotFoundError, EOFError):
+            self._cache = {}
+        finally:
+            return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        with open(self._filename, "wb+") as file:
+            d = {}
+            for key, value in self._cache.items():
+                d[key] = value
+            pickle.dump(d, file)
 
     def keys(self):
         return self._cache.keys()
@@ -18,4 +37,4 @@ class Cache:
         self._cache.pop(key, None)
 
     def clear(self):
-        map(self.remove, self._cache.keys())
+        map(self.remove, self.keys())
