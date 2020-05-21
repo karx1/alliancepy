@@ -3,7 +3,13 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
-.. _vp1p5:
+.. _vp1p5p2
+
+v1.5.2
+------
+- Write cache to file
+
+.. _vp1p5p1:
 
 v1.5.1
 ------
