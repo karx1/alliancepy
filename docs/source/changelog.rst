@@ -3,7 +3,7 @@ Changelog
 
 This is a detailed description of what changed in each version.
 
-.. _vp1p5p2
+.. _vp1p5p2:
 
 v1.5.2
 ------
